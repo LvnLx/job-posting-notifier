@@ -10,21 +10,16 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class HttpService {
-    private final HttpClient client;
-    private final ObjectMapper objectMapper;
+    private static final HttpClient client = HttpClient.newHttpClient();
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public HttpService() {
-        this.client = HttpClient.newHttpClient();
-        this.objectMapper = new ObjectMapper();
-    }
-
-    public <T> T sendRequest(Method method, String uri, Class<T> template) throws IOException, InterruptedException {
+    public static <T> T sendRequest(Method method, String uri, Class<T> template) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder().method(method.name(), HttpRequest.BodyPublishers.noBody()).uri(URI.create(uri)).build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         return objectMapper.readValue(response.body(), template);
     }
 
-    public void sendRequest(Method method, String uri, String body, String... headers) throws IOException, InterruptedException {
+    public static void sendRequest(Method method, String uri, String body, String... headers) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder().method(method.name(), HttpRequest.BodyPublishers.ofString(body)).headers(headers).uri(URI.create(uri)).build();
         client.send(request, HttpResponse.BodyHandlers.ofString());
     }

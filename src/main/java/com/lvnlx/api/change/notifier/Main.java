@@ -1,6 +1,6 @@
 package com.lvnlx.api.change.notifier;
 
-import com.lvnlx.api.change.notifier.service.ApiNotifier;
+import com.lvnlx.api.change.notifier.service.ApiChangeNotifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,17 +13,15 @@ import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class Main {
+    private static final Logger logger = LoggerFactory.getLogger(Main.class);
+    private static final AtomicReference<Set<String>> currentJobIds = new AtomicReference<>(new HashSet<>());
+
     public static void main(String[] args) {
-        Logger logger = LoggerFactory.getLogger(Main.class);
-        ApiNotifier apiNotifier = new ApiNotifier();
-        AtomicReference<Set<String>> currentJobIds = new AtomicReference<>(new HashSet<>());
-
-        logger.info("Starting notifier");
-
+        logger.info("Starting API change notifier");
         ScheduledExecutorService scheduler = newSingleThreadScheduledExecutor();
         scheduler.scheduleAtFixedRate(() -> {
-            Set<String> updatedJobIds = apiNotifier.refreshJobs(currentJobIds.get());
+            Set<String> updatedJobIds = ApiChangeNotifier.refreshJobs(currentJobIds.get());
             currentJobIds.set(updatedJobIds);
-        }, 0, 5, SECONDS);
+        }, 0, 10, SECONDS);
     }
 }
