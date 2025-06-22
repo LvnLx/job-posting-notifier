@@ -1,12 +1,11 @@
 package com.lvnlx.api.change.notifier.model.netflix;
 
 import com.lvnlx.api.change.notifier.model.Job;
-import com.lvnlx.api.change.notifier.model.netflix.response.JobsResponse;
 import com.lvnlx.api.change.notifier.model.netflix.response.JobsResponsePosition;
 
-public class NetflixJob extends Job<JobsResponse, JobsResponsePosition> {
-    public NetflixJob(Class<JobsResponse> responseTemplate, JobsResponsePosition job) {
-        super(responseTemplate, job);
+public class NetflixJob extends Job<JobsResponsePosition> {
+    public NetflixJob(JobsResponsePosition job) {
+        super("Netflix", job);
     }
 
     @Override
