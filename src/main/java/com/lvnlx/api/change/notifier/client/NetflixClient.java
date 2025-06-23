@@ -21,7 +21,7 @@ public class NetflixClient extends Client<NetflixJob> {
         return getAll(0, Integer.MAX_VALUE)
                 .stream()
                 .flatMap(response -> response.positions.stream())
-                .filter(position -> position.name.contains("L4"))
+                .filter(position -> position.name.contains("L4") && !position.name.contains("Security") && !position.name.contains("Site Reliability") && !position.name.contains("UI") && !position.name.contains("Android") && !position.name.contains("iOS"))
                 .map(NetflixJob::new)
                 .toList();
     }
