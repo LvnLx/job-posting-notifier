@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+concurrency:
+  group: deploy
+
 env:
   GCP_PROJECT_ID: massive-incline-463501-d5
   IMAGE_NAME: app
@@ -45,6 +48,7 @@ jobs:
         working-directory: terraform
 
   build_and_deploy:
+    needs: setup_infrastructure
     name: Build & deploy
     runs-on: ubuntu-latest
 
