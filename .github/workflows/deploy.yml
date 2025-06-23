@@ -5,9 +5,22 @@ on:
     branches:
       - main
 
+env:
+  GCP_PROJECT_ID: massive-incline-463501-d5
+  IMAGE_NAME: app
+  PROJECT_NAME: api-change-notifier
+  REGION: us-central1
+
 jobs:
-  deploy:
+  setup_infrastructure:
+    name: Setup infrastructure
     runs-on: ubuntu-latest
+    env:
+      TF_VAR_image_name: $${{ env.IMAGE_NAME }}
+      TF_VAR_notification_topic: $${{ secret.NOTIFICATION_TOPIC }}
+      TF_VAR_project_id: $${{ env.GCP_PROJECT_ID }}
+      TF_VAR_project_name: ${{ env.PROJECT_NAME }}
+      TF_VAR_region: ${{ env.REGION }}
 
     steps:
       - name: Checkout repo
@@ -16,7 +29,7 @@ jobs:
       - name: Authenticate to GCP
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: '${{ secrets.GCP_CREDENTIALS_JSON }}'
+          credentials_json: ${{ secrets.GCP_CREDENTIALS_JSON }}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -30,3 +43,40 @@ jobs:
       - name: Apply Terraform
         run: terraform apply -auto-approve
         working-directory: terraform
+
+  build_and_deploy:
+    name: Build & deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Build with Maven
+        run: mvn clean package
+
+      - name: Set up Google Cloud CLI
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS_JSON }}
+
+      - name: Authenticate Docker with Artifact Registry
+        run: gcloud auth configure-docker $REGION-docker.pkg.dev --quiet
+
+      - name: Build Docker image
+        run: |
+          docker build -t $REGION-docker.pkg.dev/$GCP_PROJECT_ID/$PROJECT_NAME/$IMAGE_NAME:latest .
+
+      - name: Publish Docker image
+        run: |
+          docker push $REGION-docker.pkg.dev/$GCP_PROJECT_ID/$PROJECT_NAME/$IMAGE_NAME:latest
+
+      - name: Restart Compute Engine instance
+        run: |
+          gcloud compute instances reset $PROJECT_NAME --zone=$REGION
