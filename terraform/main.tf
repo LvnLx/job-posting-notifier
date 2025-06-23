@@ -1,7 +1,7 @@
 terraform {
   backend "gcs" {
     bucket = "lvnlx-terraform"
-    prefix = var.project_name
+    prefix = "api-change-notifier"
   }
 }
 
