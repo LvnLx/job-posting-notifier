@@ -1,0 +1,26 @@
+package com.lvnlx.api.change.notifier.client;
+
+import com.lvnlx.api.change.notifier.enumeration.Method;
+import com.lvnlx.api.change.notifier.model.lever.LeverJob;
+import com.lvnlx.api.change.notifier.model.lever.response.Posting;
+import com.lvnlx.api.change.notifier.service.HttpService;
+import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+
+@Service
+public class LeverClient extends Client<LeverJob> {
+    LeverClient(HttpService httpService) {
+        super(httpService);
+    }
+
+    @Override
+    protected List<LeverJob> getAllJobs() throws IOException, InterruptedException {
+        return Arrays.stream(httpService.sendRequest(Method.GET, "https://api.lever.co/v0/postings/spotify?mode=json&department=Engineering", Posting[].class))
+                .filter(posting -> posting.text.contains("Backend Engineer") && !posting.text.contains("Senior") && posting.country.equals("US"))
+                .map(LeverJob::new)
+                .toList();
+    }
+}
