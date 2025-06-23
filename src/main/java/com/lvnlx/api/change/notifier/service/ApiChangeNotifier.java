@@ -20,13 +20,15 @@ public class ApiChangeNotifier {
 
     private final HttpService httpService;
     private Set<String> currentJobIds;
+    private final String notificationTopic;
 
     ApiChangeNotifier(HttpService httpService) {
         this.httpService = httpService;
         this.currentJobIds = new HashSet<>();
+        this.notificationTopic = System.getenv("NOTIFICATION_TOPIC");
     }
 
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRate = 600000)
     public void refreshJobs() {
         try {
             JobResult jobResult = getNewJobs(currentJobIds);
@@ -66,7 +68,7 @@ public class ApiChangeNotifier {
         if (!jobs.isEmpty()) {
             try {
                 for (Job<?> job : jobs) {
-                    httpService.sendRequest(Method.POST, "https://ntfy.sh/my-super-test-topic-123", job.getTitle(), "Title", String.format("New %s Job", job.company), "X-Tags", "briefcase", "Actions", String.format("view, Posting, %s", job.getLink()));
+                    httpService.sendRequest(Method.POST, String.format("https://ntfy.sh/%s", notificationTopic), job.getTitle(), "Title", String.format("New %s Job", job.company), "X-Tags", "briefcase", "Actions", String.format("view, Posting, %s", job.getLink()));
                     logger.info("Sent notification for job {}", job.getId());
                 }
             } catch (IOException | InterruptedException exception) {
