@@ -23,4 +23,6 @@ resource "google_compute_instance" "app" {
     docker pull ${var.region}-docker.pkg.dev/${var.project_id}/${var.project_name}/app:latest
     docker run -d --rm -e NOTIFICATION_TOPIC="${var.notification_topic}" ${var.region}-docker.pkg.dev/${var.project_id}/${var.project_name}/${var.image_name}:latest
   EOT
+
+  depends_on = [google_artifact_registry_repository.docker]
 }
