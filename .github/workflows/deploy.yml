@@ -15,41 +15,25 @@ env:
   REGION: us-central1
 
 jobs:
-  setup_infrastructure:
-    name: Setup infrastructure
+  deploy_repository:
+    name: Deploy repository
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Authenticate to GCP
-        uses: google-github-actions/auth@v2
+      - uses: ./.github/actions/deploy_terraform_resource
         with:
-          credentials_json: ${{ secrets.GCP_CREDENTIALS_JSON }}
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.12.2
-
-      - name: Initialize Terraform
-        run: terraform init
-        working-directory: terraform
-
-      - name: Apply Terraform
-        run: terraform apply -auto-approve
-        working-directory: terraform
+          target: google_artifact_registry_repository.docker
         env:
-          TF_VAR_image_name: ${{ env.IMAGE_NAME }}
-          TF_VAR_notification_topic: ${{ secrets.NOTIFICATION_TOPIC }}
-          TF_VAR_project_id: ${{ env.GCP_PROJECT_ID }}
-          TF_VAR_project_name: ${{ env.PROJECT_NAME }}
-          TF_VAR_region: ${{ env.REGION }}
+          GCP_PROJECT_ID: ${{ env.GCP_PROJECT_ID }}
+          IMAGE_NAME: ${{ env.IMAGE_NAME }}
+          PROJECT_NAME: ${{ env.PROJECT_NAME }}
+          REGION: ${{ env.REGION }}
+        secrets:
+          GCP_CREDENTIALS_JSON: ${{ secrets.GCP_CREDENTIALS_JSON }}
+          NOTIFICATION_TOPIC: ${{ secrets.NOTIFICATION_TOPIC }}
 
-  build_and_deploy:
-    needs: setup_infrastructure
-    name: Build & deploy
+  build_and_publish:
+    needs: deploy_repository
+    name: Build & publish
     runs-on: ubuntu-latest
 
     steps:
@@ -63,7 +47,7 @@ jobs:
           java-version: 21
 
       - name: Build with Maven
-        run: mvn clean package
+        run: mvn -B clean package
 
       - name: Authenticate to GCP
         uses: google-github-actions/auth@v2
@@ -84,6 +68,20 @@ jobs:
         run: |
           docker push $REGION-docker.pkg.dev/$GCP_PROJECT_ID/$PROJECT_NAME/$IMAGE_NAME:latest
 
-      - name: Restart Compute Engine instance
-        run: |
-          gcloud compute instances reset $PROJECT_NAME --zone=us-central1-a
+  deploy_instance:
+    needs: build_and_publish
+    name: Deploy instance
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: ./.github/actions/deploy_terraform_resource
+        with:
+          target: google_compute_instance.app
+        env:
+          GCP_PROJECT_ID: ${{ env.GCP_PROJECT_ID }}
+          IMAGE_NAME: ${{ env.IMAGE_NAME }}
+          PROJECT_NAME: ${{ env.PROJECT_NAME }}
+          REGION: ${{ env.REGION }}
+        secrets:
+          GCP_CREDENTIALS_JSON: ${{ secrets.GCP_CREDENTIALS_JSON }}
+          NOTIFICATION_TOPIC: ${{ secrets.NOTIFICATION_TOPIC }}
