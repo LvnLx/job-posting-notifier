@@ -28,8 +28,10 @@ jobs:
         with:
           target: google_artifact_registry_repository.app
         env:
+          GCP_CREDENTIALS_JSON: ${{ secrets.GCP_CREDENTIALS_JSON }}
           GCP_PROJECT_ID: ${{ env.GCP_PROJECT_ID }}
           IMAGE_NAME: ${{ env.IMAGE_NAME }}
+          NOTIFICATION_TOPIC: ${{ secrets.NOTIFICATION_TOPIC }}
           PROJECT_NAME: ${{ env.PROJECT_NAME }}
           REGION: ${{ env.REGION }}
 
@@ -84,7 +86,9 @@ jobs:
         with:
           target: google_compute_instance.app
         env:
+          GCP_CREDENTIALS_JSON: ${{ secrets.GCP_CREDENTIALS_JSON }}
           GCP_PROJECT_ID: ${{ env.GCP_PROJECT_ID }}
           IMAGE_NAME: ${{ env.IMAGE_NAME }}
+          NOTIFICATION_TOPIC: ${{ secrets.NOTIFICATION_TOPIC }}
           PROJECT_NAME: ${{ env.PROJECT_NAME }}
           REGION: ${{ env.REGION }}
