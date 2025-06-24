@@ -1,5 +1,8 @@
 name: Deploy Terraform resource
 inputs:
+  force-destroy:
+    default: "false"
+    description: Whether to destroy an existing instance of the resource before deploying it again
   target:
     required: true
     description: Terraform resource to deploy
@@ -24,9 +27,14 @@ runs:
       run: terraform init
       working-directory: terraform
 
+    - name: Destroy resource
+      if: inputs.force-destroy == "true"
+      shell: bash
+      run: terraform destroy -target=${{ inputs.target }} -auto-approve
+
     - name: Apply Terraform
       shell: bash
-      run: terraform apply -target=google_artifact_registry_repository.docker -auto-approve
+      run: terraform apply -target=${{ inputs.target }} -auto-approve
       working-directory: terraform
       env:
         TF_VAR_image_name: ${{ env.IMAGE_NAME }}

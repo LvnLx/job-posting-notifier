@@ -84,6 +84,7 @@ jobs:
       - name: Run action
         uses: ./.github/actions/deploy_terraform_resource
         with:
+          force-destroy: true
           target: google_compute_instance.app
         env:
           GCP_CREDENTIALS_JSON: ${{ secrets.GCP_CREDENTIALS_JSON }}
