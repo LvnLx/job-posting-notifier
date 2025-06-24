@@ -30,23 +30,12 @@ runs:
     - name: Destroy resource
       if: inputs.force-destroy == 'true'
       shell: bash
-      run: terraform destroy -target="${{ inputs.target }}" -auto-approve
+      run: terraform destroy -target ${{ inputs.target }} -auto-approve
       working-directory: terraform
-
-    - name: Plan Terraform
-      shell: bash
-      run: terraform plan -target="${{ inputs.target }}"
-      working-directory: terraform
-      env:
-        TF_VAR_image_name: ${{ env.IMAGE_NAME }}
-        TF_VAR_notification_topic: ${{ env.NOTIFICATION_TOPIC }}
-        TF_VAR_project_id: ${{ env.GCP_PROJECT_ID }}
-        TF_VAR_project_name: ${{ env.PROJECT_NAME }}
-        TF_VAR_region: ${{ env.REGION }}
 
     - name: Apply Terraform
       shell: bash
-      run: terraform apply -target="${{ inputs.target }}" -auto-approve
+      run: terraform apply -target ${{ inputs.target }} -auto-approve
       working-directory: terraform
       env:
         TF_VAR_image_name: ${{ env.IMAGE_NAME }}
