@@ -24,7 +24,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run action
-        uses: ./.github/actions/deploy_terraform_resource.yml
+        uses: ./.github/actions/deploy_terraform_resource
         with:
           target: google_artifact_registry_repository.app
         env:
@@ -80,7 +80,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run action
-        uses: ./.github/actions/deploy_terraform_resource.yml
+        uses: ./.github/actions/deploy_terraform_resource
         with:
           target: google_compute_instance.app
         env:

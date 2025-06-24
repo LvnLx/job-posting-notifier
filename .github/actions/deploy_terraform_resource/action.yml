@@ -2,6 +2,7 @@ name: Deploy Terraform resource
 inputs:
   target:
     required: true
+    description: Terraform resource to deploy
 runs:
   using: composite
   steps:
@@ -19,10 +20,12 @@ runs:
         terraform_version: 1.12.2
 
     - name: Initialize Terraform
+      shell: bash
       run: terraform init
       working-directory: terraform
 
     - name: Apply Terraform
+      shell: bash
       run: terraform apply -target=google_artifact_registry_repository.docker -auto-approve
       working-directory: terraform
       env:
