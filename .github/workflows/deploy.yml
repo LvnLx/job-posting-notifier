@@ -86,4 +86,4 @@ jobs:
 
       - name: Restart Compute Engine instance
         run: |
-          gcloud compute instances reset $PROJECT_NAME --zone=$REGION
+          gcloud compute instances reset $PROJECT_NAME --zone=us-central1-a
