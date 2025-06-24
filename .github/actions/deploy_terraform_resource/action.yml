@@ -30,12 +30,12 @@ runs:
     - name: Destroy resource
       if: inputs.force-destroy == 'true'
       shell: bash
-      run: terraform destroy -target ${{ inputs.target }} -auto-approve
+      run: terraform destroy -target="${{ inputs.target }}" -auto-approve
       working-directory: terraform
 
     - name: Apply Terraform
       shell: bash
-      run: terraform apply -target ${{ inputs.target }} -auto-approve
+      run: terraform apply -target="${{ inputs.target }}" -auto-approve
       working-directory: terraform
       env:
         TF_VAR_image_name: ${{ env.IMAGE_NAME }}
