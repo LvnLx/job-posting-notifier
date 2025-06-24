@@ -31,6 +31,7 @@ runs:
       if: inputs.force-destroy == 'true'
       shell: bash
       run: terraform destroy -target=${{ inputs.target }} -auto-approve
+      working-directory: terraform
 
     - name: Apply Terraform
       shell: bash
