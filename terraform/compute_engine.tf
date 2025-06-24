@@ -25,7 +25,4 @@ resource "google_compute_instance" "app" {
   EOT
 
   depends_on = [google_artifact_registry_repository.docker]
-  lifecycle {
-    replace_triggered_by = []
-  }
 }
