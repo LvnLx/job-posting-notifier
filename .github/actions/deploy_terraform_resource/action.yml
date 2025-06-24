@@ -1,7 +1,7 @@
 name: Deploy Terraform resource
 inputs:
   force-destroy:
-    default: "false"
+    default: 'false'
     description: Whether to destroy an existing instance of the resource before deploying it again
   target:
     required: true
@@ -28,7 +28,7 @@ runs:
       working-directory: terraform
 
     - name: Destroy resource
-      if: inputs.force-destroy == "true"
+      if: inputs.force-destroy == 'true'
       shell: bash
       run: terraform destroy -target=${{ inputs.target }} -auto-approve
 
