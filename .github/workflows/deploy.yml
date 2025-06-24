@@ -15,21 +15,12 @@ env:
   REGION: us-central1
 
 jobs:
-  deploy_repository:
-    name: Deploy repository
-    runs-on: ubuntu-latest
-    steps:
-      - uses: ./.github/actions/deploy_terraform_resource
-        with:
-          target: google_artifact_registry_repository.docker
-        env:
-          GCP_PROJECT_ID: ${{ env.GCP_PROJECT_ID }}
-          IMAGE_NAME: ${{ env.IMAGE_NAME }}
-          PROJECT_NAME: ${{ env.PROJECT_NAME }}
-          REGION: ${{ env.REGION }}
-        secrets:
-          GCP_CREDENTIALS_JSON: ${{ secrets.GCP_CREDENTIALS_JSON }}
-          NOTIFICATION_TOPIC: ${{ secrets.NOTIFICATION_TOPIC }}
+  deploy_artifactory:
+    needs: build_and_publish
+    name: Deploy artifactory
+    uses: ./.github/actions/deploy_terraform_resource.yml
+    with:
+      target: google_artifact_registry_repository.docker
 
   build_and_publish:
     needs: deploy_repository
@@ -71,17 +62,6 @@ jobs:
   deploy_instance:
     needs: build_and_publish
     name: Deploy instance
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: ./.github/actions/deploy_terraform_resource
-        with:
-          target: google_compute_instance.app
-        env:
-          GCP_PROJECT_ID: ${{ env.GCP_PROJECT_ID }}
-          IMAGE_NAME: ${{ env.IMAGE_NAME }}
-          PROJECT_NAME: ${{ env.PROJECT_NAME }}
-          REGION: ${{ env.REGION }}
-        secrets:
-          GCP_CREDENTIALS_JSON: ${{ secrets.GCP_CREDENTIALS_JSON }}
-          NOTIFICATION_TOPIC: ${{ secrets.NOTIFICATION_TOPIC }}
+    uses: ./.github/actions/deploy_terraform_resource.yml
+    with:
+      target: google_compute_instance.app
