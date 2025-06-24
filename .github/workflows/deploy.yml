@@ -81,7 +81,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Check for application code changes
+        id: detect-changes
+        run: |
+          if git diff --name-only ${{ github.sha }} ${{ github.event.before }} | grep '^src/main/'; then
+            echo "did-change=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "did-change=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Run action
+        if: steps.detect-changes.outputs.did-change == 'true'
         uses: ./.github/actions/deploy_terraform_resource
         with:
           force-destroy: true
