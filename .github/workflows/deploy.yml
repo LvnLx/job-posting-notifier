@@ -65,10 +65,13 @@ jobs:
       - name: Build with Maven
         run: mvn clean package
 
-      - name: Set up Google Cloud CLI
-        uses: google-github-actions/setup-gcloud@v2
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GCP_CREDENTIALS_JSON }}
+
+      - name: Set up Google Cloud CLI
+        uses: google-github-actions/setup-gcloud@v2
 
       - name: Authenticate Docker with Artifact Registry
         run: gcloud auth configure-docker $REGION-docker.pkg.dev --quiet
