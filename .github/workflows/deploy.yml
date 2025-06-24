@@ -34,7 +34,7 @@ jobs:
           REGION: ${{ env.REGION }}
 
   build_and_publish:
-    needs: deploy_repository
+    needs: deploy_artifactory
     name: Build & publish
     runs-on: ubuntu-latest
 
