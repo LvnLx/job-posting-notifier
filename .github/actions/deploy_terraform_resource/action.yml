@@ -27,12 +27,6 @@ runs:
       run: terraform init
       working-directory: terraform
 
-    - name: Destroy resource
-      if: inputs.force-destroy == 'true'
-      shell: bash
-      run: terraform destroy -target ${{ inputs.target }}
-      working-directory: terraform
-
     - name: Apply Terraform
       shell: bash
       run: terraform apply -target ${{ inputs.target }} -auto-approve
