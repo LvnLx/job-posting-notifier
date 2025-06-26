@@ -72,7 +72,7 @@ public class JobPostingNotifier {
                     logger.info("Sent notification for job {}", job.getId());
                 }
             } catch (IOException | InterruptedException exception) {
-                logger.error("Unable to send job notification", exception);
+                logger.error("Unable to send notification for job", exception);
             }
         } else {
             logger.info("No new jobs");
