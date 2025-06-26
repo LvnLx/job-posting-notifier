@@ -1,4 +1,4 @@
-package com.lvnlx.api.change.notifier;
+package com.lvnlx.job.posting.notifier;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

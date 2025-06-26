@@ -1,4 +1,4 @@
-package com.lvnlx.api.change.notifier.model.netflix.response;
+package com.lvnlx.job.posting.notifier.model.netflix.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

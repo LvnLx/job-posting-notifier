@@ -1,9 +1,9 @@
-package com.lvnlx.api.change.notifier.client;
+package com.lvnlx.job.posting.notifier.client;
 
-import com.lvnlx.api.change.notifier.enumeration.Method;
-import com.lvnlx.api.change.notifier.model.spotify.SpotifyJob;
-import com.lvnlx.api.change.notifier.model.spotify.response.SearchResponse;
-import com.lvnlx.api.change.notifier.service.HttpService;
+import com.lvnlx.job.posting.notifier.enumeration.Method;
+import com.lvnlx.job.posting.notifier.model.spotify.SpotifyJob;
+import com.lvnlx.job.posting.notifier.model.spotify.response.SearchResponse;
+import com.lvnlx.job.posting.notifier.service.HttpService;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;

@@ -1,7 +1,7 @@
-package com.lvnlx.api.change.notifier.client;
+package com.lvnlx.job.posting.notifier.client;
 
-import com.lvnlx.api.change.notifier.model.Job;
-import com.lvnlx.api.change.notifier.service.HttpService;
+import com.lvnlx.job.posting.notifier.model.Job;
+import com.lvnlx.job.posting.notifier.service.HttpService;
 
 import java.io.IOException;
 import java.util.ArrayList;

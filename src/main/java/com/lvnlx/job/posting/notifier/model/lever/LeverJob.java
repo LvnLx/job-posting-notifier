@@ -1,7 +1,7 @@
-package com.lvnlx.api.change.notifier.model.lever;
+package com.lvnlx.job.posting.notifier.model.lever;
 
-import com.lvnlx.api.change.notifier.model.Job;
-import com.lvnlx.api.change.notifier.model.lever.response.Posting;
+import com.lvnlx.job.posting.notifier.model.Job;
+import com.lvnlx.job.posting.notifier.model.lever.response.Posting;
 
 public class LeverJob extends Job<Posting> {
     public LeverJob(Posting job) {

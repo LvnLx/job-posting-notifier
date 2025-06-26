@@ -1,7 +1,7 @@
-package com.lvnlx.api.change.notifier.model.spotify;
+package com.lvnlx.job.posting.notifier.model.spotify;
 
-import com.lvnlx.api.change.notifier.model.Job;
-import com.lvnlx.api.change.notifier.model.spotify.response.SearchResponseJob;
+import com.lvnlx.job.posting.notifier.model.Job;
+import com.lvnlx.job.posting.notifier.model.spotify.response.SearchResponseJob;
 
 public class SpotifyJob extends Job<SearchResponseJob> {
     public SpotifyJob(SearchResponseJob job) {

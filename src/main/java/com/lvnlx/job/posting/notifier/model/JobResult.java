@@ -1,4 +1,4 @@
-package com.lvnlx.api.change.notifier.model;
+package com.lvnlx.job.posting.notifier.model;
 
 import java.util.Set;
 

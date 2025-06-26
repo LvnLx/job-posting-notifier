@@ -1,9 +1,9 @@
-package com.lvnlx.api.change.notifier.service;
+package com.lvnlx.job.posting.notifier.service;
 
-import com.lvnlx.api.change.notifier.client.Client;
-import com.lvnlx.api.change.notifier.enumeration.Method;
-import com.lvnlx.api.change.notifier.model.Job;
-import com.lvnlx.api.change.notifier.model.JobResult;
+import com.lvnlx.job.posting.notifier.client.Client;
+import com.lvnlx.job.posting.notifier.enumeration.Method;
+import com.lvnlx.job.posting.notifier.model.Job;
+import com.lvnlx.job.posting.notifier.model.JobResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -15,14 +15,14 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-public class ApiChangeNotifier {
-    private static final Logger logger = LoggerFactory.getLogger(ApiChangeNotifier.class);
+public class JobPostingNotifier {
+    private static final Logger logger = LoggerFactory.getLogger(JobPostingNotifier.class);
 
     private final HttpService httpService;
     private Set<String> currentJobIds;
     private final String notificationTopic;
 
-    ApiChangeNotifier(HttpService httpService) {
+    JobPostingNotifier(HttpService httpService) {
         this.httpService = httpService;
         this.currentJobIds = new HashSet<>();
         this.notificationTopic = System.getenv("NOTIFICATION_TOPIC");

@@ -1,7 +1,7 @@
 terraform {
   backend "gcs" {
     bucket = "lvnlx-terraform"
-    prefix = "api-change-notifier"
+    prefix = "job-posting-notifier"
   }
 }
 

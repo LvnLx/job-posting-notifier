@@ -1,4 +1,4 @@
-package com.lvnlx.api.change.notifier.model.lever.response;
+package com.lvnlx.job.posting.notifier.model.lever.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

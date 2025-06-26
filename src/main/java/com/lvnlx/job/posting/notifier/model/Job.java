@@ -1,4 +1,4 @@
-package com.lvnlx.api.change.notifier.model;
+package com.lvnlx.job.posting.notifier.model;
 
 public abstract class Job<T> {
     protected final T job;

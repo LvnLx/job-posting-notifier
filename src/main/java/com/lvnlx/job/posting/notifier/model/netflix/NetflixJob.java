@@ -1,7 +1,7 @@
-package com.lvnlx.api.change.notifier.model.netflix;
+package com.lvnlx.job.posting.notifier.model.netflix;
 
-import com.lvnlx.api.change.notifier.model.Job;
-import com.lvnlx.api.change.notifier.model.netflix.response.JobsResponsePosition;
+import com.lvnlx.job.posting.notifier.model.Job;
+import com.lvnlx.job.posting.notifier.model.netflix.response.JobsResponsePosition;
 
 public class NetflixJob extends Job<JobsResponsePosition> {
     public NetflixJob(JobsResponsePosition job) {

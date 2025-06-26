@@ -1,7 +1,7 @@
-package com.lvnlx.api.change.notifier.service;
+package com.lvnlx.job.posting.notifier.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lvnlx.api.change.notifier.enumeration.Method;
+import com.lvnlx.job.posting.notifier.enumeration.Method;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;

@@ -11,7 +11,7 @@ concurrency:
 env:
   GCP_PROJECT_ID: massive-incline-463501-d5
   IMAGE_NAME: app
-  PROJECT_NAME: api-change-notifier
+  PROJECT_NAME: job-posting-notifier
   REGION: us-central1
 
 jobs:
