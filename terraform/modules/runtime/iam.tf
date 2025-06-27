@@ -1,5 +1,5 @@
 resource "google_service_account" "vm" {
-  account_id   = "computeInstance"
+  account_id   = "compute-instance"
   display_name = "VM Service Account"
 }
 
