@@ -1,11 +1,8 @@
 name: Deploy Terraform resource
 inputs:
-  force-destroy:
-    default: 'false'
-    description: Whether to destroy an existing instance of the resource before deploying it again
-  target:
+  module:
     required: true
-    description: Terraform resource to deploy
+    description: Terraform module to apply
 runs:
   using: composite
   steps:
@@ -29,7 +26,7 @@ runs:
 
     - name: Apply Terraform
       shell: bash
-      run: terraform apply -target ${{ inputs.target }} -auto-approve
+      run: terraform apply -target module.${{ inputs.target }} -auto-approve
       working-directory: terraform
       env:
         TF_VAR_image_name: ${{ env.IMAGE_NAME }}

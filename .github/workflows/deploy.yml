@@ -26,7 +26,7 @@ jobs:
       - name: Run action
         uses: ./.github/actions/deploy_terraform_resource
         with:
-          target: google_artifact_registry_repository.docker
+          module: foundation
         env:
           GCP_CREDENTIALS_JSON: ${{ secrets.GCP_CREDENTIALS_JSON }}
           GCP_PROJECT_ID: ${{ env.GCP_PROJECT_ID }}
@@ -81,19 +81,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - uses: dorny/paths-filter@v3
-        id: changes
-        with:
-          filters: |
-            application-code:
-              - 'src/main/**'
+#      - uses: dorny/paths-filter@v3
+#        id: changes
+#        with:
+#          filters: |
+#            application-code:
+#              - 'src/main/**'
 
       - name: Run action
-        if: steps.changes.outputs.application-code == 'true'
+#        if: steps.changes.outputs.application-code == 'true'
         uses: ./.github/actions/deploy_terraform_resource
         with:
-          force-destroy: true
-          target: google_compute_instance.app
+          target: runtime
         env:
           GCP_CREDENTIALS_JSON: ${{ secrets.GCP_CREDENTIALS_JSON }}
           GCP_PROJECT_ID: ${{ env.GCP_PROJECT_ID }}
