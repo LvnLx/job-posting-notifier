@@ -26,7 +26,7 @@ runs:
 
     - name: Apply Terraform
       shell: bash
-      run: terraform apply -target module.${{ inputs.target }} -auto-approve
+      run: terraform apply -target module.${{ inputs.module }} -auto-approve
       working-directory: terraform
       env:
         TF_VAR_image_name: ${{ env.IMAGE_NAME }}
