@@ -92,7 +92,7 @@ jobs:
 #        if: steps.changes.outputs.application-code == 'true'
         uses: ./.github/actions/deploy_terraform_resource
         with:
-          target: runtime
+          module: runtime
         env:
           GCP_CREDENTIALS_JSON: ${{ secrets.GCP_CREDENTIALS_JSON }}
           GCP_PROJECT_ID: ${{ env.GCP_PROJECT_ID }}
