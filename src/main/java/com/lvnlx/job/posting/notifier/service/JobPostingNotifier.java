@@ -1,46 +1,41 @@
 package com.lvnlx.job.posting.notifier.service;
 
 import com.lvnlx.job.posting.notifier.client.Client;
-import com.lvnlx.job.posting.notifier.enumeration.Method;
+import com.lvnlx.job.posting.notifier.enumeration.Level;
 import com.lvnlx.job.posting.notifier.model.Job;
 import com.lvnlx.job.posting.notifier.model.JobResult;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Service
 public class JobPostingNotifier {
-    private static final Logger logger = LoggerFactory.getLogger(JobPostingNotifier.class);
-
-    private final HttpService httpService;
+    private final NotificationService notificationService;
     private Set<String> currentJobIds;
-    private final String notificationTopic;
 
-    JobPostingNotifier(HttpService httpService) {
-        this.httpService = httpService;
+    JobPostingNotifier(NotificationService notificationService) {
+        this.notificationService = notificationService;
         this.currentJobIds = new HashSet<>();
-        this.notificationTopic = System.getenv("NOTIFICATION_TOPIC");
+    }
+
+    @EventListener(ApplicationReadyEvent.class)
+    public void sendStartupNotification() {
+        notificationService.sendNotification("Job posting notifications starting", "You will begin receiving new job postings shortly", Level.INFO);
     }
 
     @Scheduled(fixedRate = 600000)
     public void refreshJobs() {
-        try {
-            JobResult jobResult = getNewJobs(currentJobIds);
-            sendNotifications(jobResult.newJobs);
-            currentJobIds = jobResult.jobIds;
-        } catch (IOException | InterruptedException exception) {
-            logger.error("Unable to retrieve new jobs", exception);
-            sendNotification(String.format("Unable to retrieve new jobs: %s", exception.getMessage()));
-        }
+        JobResult jobResult = getNewJobs(currentJobIds);
+        notificationService.sendNotifications(jobResult.newJobs);
+        currentJobIds = jobResult.jobIds;
     }
 
-    private JobResult getNewJobs(Set<String> currentJobIds) throws IOException, InterruptedException {
+    private JobResult getNewJobs(Set<String> currentJobIds) {
         List<Job<?>> jobs = Client.getJobsFromAll();
 
         HashSet<String> updatedJobIds = new HashSet<>();
@@ -54,28 +49,5 @@ public class JobPostingNotifier {
         }
 
         return new JobResult(updatedJobIds, newJobs);
-    }
-
-    private void sendNotification(String message) {
-        try {
-            httpService.sendRequest(Method.POST, "https://ntfy.sh/my-super-test-topic-123", message, "Title", "API Change Notifier Down", "X-Tags", "warning");
-        } catch (IOException | InterruptedException exception) {
-            logger.error("Unable to send notification", exception);
-        }
-    }
-
-    private void sendNotifications(Set<Job<?>> jobs) {
-        if (!jobs.isEmpty()) {
-            try {
-                for (Job<?> job : jobs) {
-                    httpService.sendRequest(Method.POST, String.format("https://ntfy.sh/%s", notificationTopic), job.getTitle(), "Title", String.format("New %s Job", job.company), "X-Tags", "briefcase", "Actions", String.format("view, Posting, %s", job.getLink()));
-                    logger.info("Sent notification for job {}", job.getId());
-                }
-            } catch (IOException | InterruptedException exception) {
-                logger.error("Unable to send job notification", exception);
-            }
-        } else {
-            logger.info("No new jobs");
-        }
     }
 }

@@ -21,9 +21,10 @@ resource "google_compute_instance" "app" {
   metadata_startup_script = <<-EOT
     #!/bin/bash
     sudo apt-get update
+    sudo apt-get install -y docker.io
     gcloud auth configure-docker ${var.region}-docker.pkg.dev --quiet
-    docker pull ${var.region}-docker.pkg.dev/${var.project_id}/${var.project_name}/app:latest
-    docker run -d --rm -e NOTIFICATION_TOPIC="${var.notification_topic}" ${var.region}-docker.pkg.dev/${var.project_id}/${var.project_name}/${var.image_name}:latest
+    sudo docker pull ${var.region}-docker.pkg.dev/${var.project_id}/${var.project_name}/app:latest
+    sudo docker run --rm -e NOTIFICATION_TOPIC="${var.notification_topic}" ${var.region}-docker.pkg.dev/${var.project_id}/${var.project_name}/${var.image_name}:latest
   EOT
 
   lifecycle {

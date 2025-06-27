@@ -4,6 +4,7 @@ import com.lvnlx.job.posting.notifier.enumeration.Method;
 import com.lvnlx.job.posting.notifier.model.netflix.NetflixJob;
 import com.lvnlx.job.posting.notifier.model.netflix.response.JobsResponse;
 import com.lvnlx.job.posting.notifier.service.HttpService;
+import com.lvnlx.job.posting.notifier.service.NotificationService;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -12,8 +13,8 @@ import java.util.List;
 
 @Service
 public class NetflixClient extends Client<NetflixJob> {
-    NetflixClient(HttpService httpService) {
-        super(httpService);
+    NetflixClient(HttpService httpService, NotificationService notificationService) {
+        super("Netflix", httpService, notificationService);
     }
 
     @Override

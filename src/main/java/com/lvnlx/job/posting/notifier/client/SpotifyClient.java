@@ -4,6 +4,7 @@ import com.lvnlx.job.posting.notifier.enumeration.Method;
 import com.lvnlx.job.posting.notifier.model.spotify.SpotifyJob;
 import com.lvnlx.job.posting.notifier.model.spotify.response.SearchResponse;
 import com.lvnlx.job.posting.notifier.service.HttpService;
+import com.lvnlx.job.posting.notifier.service.NotificationService;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -11,8 +12,8 @@ import java.util.List;
 
 @Service
 public class SpotifyClient extends Client<SpotifyJob> {
-    public SpotifyClient(HttpService httpService) {
-        super(httpService);
+    public SpotifyClient(HttpService httpService, NotificationService notificationService) {
+        super("Spotify", httpService, notificationService);
     }
 
     @Override

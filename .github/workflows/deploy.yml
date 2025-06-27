@@ -23,7 +23,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            infrastructure:
+              - 'terraform/*'
+              - 'terraform/modules/foundation/**'
+
       - name: Run action
+        if: steps.changes.outputs.infrastructure == 'true'
         uses: ./.github/actions/deploy_terraform_resource
         with:
           module: foundation
@@ -44,31 +53,47 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            application:
+              - 'Dockerfile'
+              - 'pom.xml'
+              - 'src/main/**'
+
       - name: Set up JDK
+        if: steps.changes.outputs.application == 'true'
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
 
       - name: Build with Maven
+        if: steps.changes.outputs.application == 'true'
         run: mvn -B clean package
 
       - name: Authenticate to GCP
+        if: steps.changes.outputs.application == 'true'
         uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GCP_CREDENTIALS_JSON }}
 
       - name: Set up Google Cloud CLI
+        if: steps.changes.outputs.application == 'true'
         uses: google-github-actions/setup-gcloud@v2
 
       - name: Authenticate Docker with Artifact Registry
+        if: steps.changes.outputs.application == 'true'
         run: gcloud auth configure-docker $REGION-docker.pkg.dev --quiet
 
       - name: Build Docker image
+        if: steps.changes.outputs.application == 'true'
         run: |
           docker build -t $REGION-docker.pkg.dev/$GCP_PROJECT_ID/$PROJECT_NAME/$IMAGE_NAME:latest .
 
       - name: Publish Docker image
+        if: steps.changes.outputs.application == 'true'
         run: |
           docker push $REGION-docker.pkg.dev/$GCP_PROJECT_ID/$PROJECT_NAME/$IMAGE_NAME:latest
 
@@ -81,15 +106,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-#      - uses: dorny/paths-filter@v3
-#        id: changes
-#        with:
-#          filters: |
-#            application-code:
-#              - 'src/main/**'
+      - uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            application:
+              - 'Dockerfile'
+              - 'pom.xml'
+              - 'src/main/**'
+            infrastructure:
+              - 'terraform/*'
+              - 'terraform/modules/runtime/**'
 
       - name: Run action
-#        if: steps.changes.outputs.application-code == 'true'
+        if: ${{ steps.changes.outputs.application == 'true' || steps.changes.outputs.infrastructure == 'true' }}
         uses: ./.github/actions/deploy_terraform_resource
         with:
           module: runtime
