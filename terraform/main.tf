@@ -12,12 +12,12 @@ provider "google" {
 }
 
 module "foundation" {
-  source    = "modules/foundation"
+  source    = "./modules/foundation"
   project_name = var.project_name
 }
 
 module "runtime" {
-  source    = "modules/runtime"
+  source    = "./modules/runtime"
   image_name = var.image_name
   notification_topic = var.notification_topic
   project_id = var.project_id
