@@ -42,7 +42,7 @@ public abstract class Client<T extends Job<?>> {
         try {
             return getAllJobs();
         } catch (IOException | InterruptedException exception) {
-            logger.error("Unable to retrieve new jobs for {} client", name, exception);
+            logger.error(String.format("Unable to retrieve new jobs for %s client", name), exception);
 
             if (!sentFailure) {
                 notificationService.sendNotification(String.format("Unable to retrieve new jobs for %s client", name), exception.getMessage(), Level.ERROR);
