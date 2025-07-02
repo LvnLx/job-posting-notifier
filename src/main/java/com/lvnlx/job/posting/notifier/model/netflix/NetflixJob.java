@@ -10,7 +10,7 @@ public class NetflixJob extends Job<JobsResponsePosition> {
 
     @Override
     public String getId() {
-        return String.valueOf(this.job.id);
+        return String.valueOf(this.job.ats_job_id);
     }
 
     @Override

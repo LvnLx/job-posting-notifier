@@ -15,13 +15,13 @@ public abstract class Client<T extends Job<?>> {
     private static final List<Client<?>> clients = new ArrayList<>();
     private static final Logger logger = LoggerFactory.getLogger(Client.class);
 
-    private boolean sentFailure;
+    private int failureCount;
     final String name;
     final NotificationService notificationService;
     final HttpService httpService;
 
     Client(String name, HttpService httpService, NotificationService notificationService) {
-        this.sentFailure = false;
+        this.failureCount = 0;
         this.name = name;
         this.httpService = httpService;
         this.notificationService = notificationService;
@@ -40,13 +40,19 @@ public abstract class Client<T extends Job<?>> {
 
     private List<T> getAllJobsSafely() {
         try {
-            return getAllJobs();
+            List<T> jobs = getAllJobs();
+
+            if (failureCount > 0) {
+                notificationService.sendNotification(String.format("%s client recovered", name), String.format("Recovered after %d failures", failureCount), Level.INFO);
+                failureCount = 0;
+            }
+
+            return jobs;
         } catch (IOException | InterruptedException exception) {
             logger.error(String.format("Unable to retrieve new jobs for %s client", name), exception);
 
-            if (!sentFailure) {
-                notificationService.sendNotification(String.format("Unable to retrieve new jobs for %s client", name), exception.getMessage(), Level.ERROR);
-                sentFailure = true;
+            if (failureCount > 1) {
+                notificationService.sendNotification(String.format("Unable to retrieve new %s jobs", name), exception.getMessage(), Level.ERROR);
             }
 
             return new ArrayList<>();
