@@ -20,7 +20,7 @@ public class LeverClient extends Client<LeverJob> {
     @Override
     protected List<LeverJob> getAllJobs() throws IOException, InterruptedException {
         return Arrays.stream(httpService.sendRequest(Method.GET, "https://api.lever.co/v0/postings/spotify?mode=json&department=Engineering", Posting[].class))
-                .filter(posting -> posting.text.contains("Backend Engineer") && !posting.text.contains("Senior") && posting.country.equals("US"))
+                .filter(posting -> posting.text.contains("Backend Engineer") && posting.country.equals("US"))
                 .map(LeverJob::new)
                 .toList();
     }
