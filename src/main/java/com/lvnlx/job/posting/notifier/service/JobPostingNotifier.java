@@ -4,7 +4,10 @@ import com.lvnlx.job.posting.notifier.client.Client;
 import com.lvnlx.job.posting.notifier.enumeration.Level;
 import com.lvnlx.job.posting.notifier.model.Job;
 import com.lvnlx.job.posting.notifier.model.JobResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -15,6 +18,8 @@ import java.util.Set;
 
 @Service
 public class JobPostingNotifier {
+    private static final Logger logger = LoggerFactory.getLogger(JobPostingNotifier.class);
+
     private final NotificationService notificationService;
     private Set<String> currentJobIds;
 
@@ -29,7 +34,9 @@ public class JobPostingNotifier {
     }
 
     @Scheduled(fixedRate = 600000)
+    @CacheEvict(value = "jobs", allEntries = true)
     public void refreshJobs() {
+        logger.info("Refreshing jobs");
         JobResult jobResult = getNewJobs(currentJobIds);
         notificationService.sendNotifications(jobResult.newJobs);
         currentJobIds = jobResult.jobIds;
