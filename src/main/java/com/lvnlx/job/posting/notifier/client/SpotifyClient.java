@@ -19,7 +19,7 @@ public class SpotifyClient extends Client<SpotifyJob> {
     @Override
     protected List<SpotifyJob> getAllJobs() throws IOException, InterruptedException {
         SearchResponse response = httpService.sendRequest(Method.GET, "https://api-dot-new-spotifyjobs-com.nw.r.appspot.com/wp-json/animal/v1/job/search?l=berlin%2Cchicago%2Clos-angeles%2Cnashville%2Cnew-york%2Ctoronto&c=backend%2Cclient-c%2Cdeveloper-tools-infrastructure%2Cnetwork-engineering-it%2Csecurity%2Cweb", SearchResponse.class);
-        return response.result.stream().map(SpotifyJob::new).toList();
+        return response.result.stream().filter(job -> !job.text.contains("Data")).map(SpotifyJob::new).toList();
 
     }
 }

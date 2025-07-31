@@ -1,10 +1,10 @@
-package com.lvnlx.job.posting.notifier.model.lever;
+package com.lvnlx.job.posting.notifier.model.lever.spotify;
 
 import com.lvnlx.job.posting.notifier.model.Job;
-import com.lvnlx.job.posting.notifier.model.lever.response.Posting;
+import com.lvnlx.job.posting.notifier.model.lever.spotify.response.Posting;
 
-public class LeverJob extends Job<Posting> {
-    public LeverJob(Posting job) {
+public class LeverSpotifyJob extends Job<Posting> {
+    public LeverSpotifyJob(Posting job) {
         super("Lever (Spotify)", job);
     }
 
