@@ -30,7 +30,7 @@ public class JobPostingNotifier {
 
     @EventListener(ApplicationReadyEvent.class)
     public void sendStartupNotification() {
-        notificationService.sendNotification("Job posting notifications starting", "You will begin receiving new job postings shortly", Level.INFO);
+        notificationService.sendNotification("Job posting notifications active", "You will begin receiving new job postings shortly", Level.INFO);
     }
 
     @Scheduled(fixedRate = 600000)
