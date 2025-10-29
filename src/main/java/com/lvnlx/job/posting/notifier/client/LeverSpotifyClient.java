@@ -1,6 +1,5 @@
 package com.lvnlx.job.posting.notifier.client;
 
-import com.lvnlx.job.posting.notifier.enumeration.Method;
 import com.lvnlx.job.posting.notifier.model.lever.spotify.LeverSpotifyJob;
 import com.lvnlx.job.posting.notifier.model.lever.spotify.response.Posting;
 import com.lvnlx.job.posting.notifier.service.HttpService;
@@ -19,7 +18,7 @@ public class LeverSpotifyClient extends Client<LeverSpotifyJob> {
 
     @Override
     protected List<LeverSpotifyJob> getAllJobs() throws IOException, InterruptedException {
-        return Arrays.stream(httpService.sendRequest(Method.GET, "https://api.lever.co/v0/postings/spotify?mode=json&department=Engineering", Posting[].class))
+        return Arrays.stream(httpService.sendGetRequest("https://api.lever.co/v0/postings/spotify?mode=json&department=Engineering", Posting[].class))
                 .filter(posting -> !posting.text.contains("Machine Learning") && !posting.text.contains("Manager") && !posting.text.contains("Data Engineer") && posting.country.equals("US"))
                 .map(LeverSpotifyJob::new)
                 .toList();

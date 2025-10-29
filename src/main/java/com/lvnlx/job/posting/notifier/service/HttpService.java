@@ -15,10 +15,17 @@ public class HttpService {
     private final HttpClient client = HttpClient.newHttpClient();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public <T> T sendRequest(Method method, String uri, Class<T> template) throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder().method(method.name(), HttpRequest.BodyPublishers.noBody()).uri(URI.create(uri)).build();
+    public <T> T sendGetRequest(String uri, Class<T> responseTemplate) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder().method(Method.GET.name(), HttpRequest.BodyPublishers.noBody()).uri(URI.create(uri)).build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        return objectMapper.readValue(response.body(), template);
+        return objectMapper.readValue(response.body(), responseTemplate);
+    }
+
+    public <T, U> U sendPostRequest(String uri, T requestBody, Class<U> responseTemplate) throws IOException, InterruptedException {
+        String body = objectMapper.writeValueAsString(requestBody);
+        HttpRequest request = HttpRequest.newBuilder().method(Method.POST.name(), HttpRequest.BodyPublishers.ofString(body)).uri(URI.create(uri)).setHeader("Content-Type", "application/json").build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        return objectMapper.readValue(response.body(), responseTemplate);
     }
 
     public void sendRequest(Method method, String uri, String body, String... headers) throws IOException, InterruptedException {

@@ -1,6 +1,5 @@
 package com.lvnlx.job.posting.notifier.client;
 
-import com.lvnlx.job.posting.notifier.enumeration.Method;
 import com.lvnlx.job.posting.notifier.model.netflix.NetflixJob;
 import com.lvnlx.job.posting.notifier.model.netflix.response.JobsResponse;
 import com.lvnlx.job.posting.notifier.service.HttpService;
@@ -34,7 +33,7 @@ public class NetflixClient extends Client<NetflixJob> {
 
         int PAGE_SIZE = 10;
 
-        JobsResponse response = httpService.sendRequest(Method.GET, String.format("https://explore.jobs.netflix.net/api/apply/v2/jobs?start=%d&num=%d&Teams=Engineering&Work%%20Type=remote&Region=ucan&sort_by=relevance", offset, PAGE_SIZE), JobsResponse.class);
+        JobsResponse response = httpService.sendGetRequest(String.format("https://explore.jobs.netflix.net/api/apply/v2/jobs?start=%d&num=%d&Teams=Engineering&Work%%20Type=remote&Region=ucan&sort_by=relevance", offset, PAGE_SIZE), JobsResponse.class);
         List<JobsResponse> responses = getAll(offset + PAGE_SIZE, response.count);
         responses.add(response);
 

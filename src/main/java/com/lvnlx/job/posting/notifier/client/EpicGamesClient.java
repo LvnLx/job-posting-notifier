@@ -1,6 +1,5 @@
 package com.lvnlx.job.posting.notifier.client;
 
-import com.lvnlx.job.posting.notifier.enumeration.Method;
 import com.lvnlx.job.posting.notifier.model.epicgames.EpicGamesJob;
 import com.lvnlx.job.posting.notifier.model.epicgames.response.JobResponse;
 import com.lvnlx.job.posting.notifier.service.HttpService;
@@ -34,7 +33,7 @@ public class EpicGamesClient extends Client<EpicGamesJob> {
 
         int PAGE_SIZE = 10;
 
-        JobResponse response = httpService.sendRequest(Method.GET, String.format("https://greenhouse-service.debc.live.use1a.on.epicgames.com/api/job?limit=%d&skip=%d&department=Engineering&country=United%%20States", PAGE_SIZE, offset), JobResponse.class);
+        JobResponse response = httpService.sendGetRequest(String.format("https://greenhouse-service.debc.live.use1a.on.epicgames.com/api/job?limit=%d&skip=%d&department=Engineering&country=United%%20States", PAGE_SIZE, offset), JobResponse.class);
         List<JobResponse> responses = getAll(offset + PAGE_SIZE, offset + response.hits.size());
         responses.add(response);
 
