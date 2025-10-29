@@ -14,7 +14,13 @@ import java.util.List;
 @Service
 public class AppleClient extends Client<AppleJob> {
     AppleClient(HttpService httpService, NotificationService notificationService) {
-        super("Apple", httpService, notificationService);
+        super(
+                "Apple",
+                httpService,
+                notificationService,
+                new ArrayList<>(List.of("research", "testing")),
+                new ArrayList<>(List.of("engineer"))
+        );
     }
 
     @Override
@@ -22,7 +28,7 @@ public class AppleClient extends Client<AppleJob> {
         return getAll(1)
                 .stream()
                 .flatMap(searchResponse -> searchResponse.res.searchResults.stream())
-                .filter(searchResult -> !searchResult.postingTitle.toLowerCase().contains("research") && !searchResult.postingTitle.toLowerCase().contains("testing") && searchResult.postingTitle.toLowerCase().contains("engineer")).map(AppleJob::new)
+                .map(AppleJob::new)
                 .toList();
     }
 

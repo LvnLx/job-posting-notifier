@@ -19,12 +19,16 @@ public abstract class Client<T extends Job<?>> {
     final String name;
     final NotificationService notificationService;
     final HttpService httpService;
+    final List<String> titleExclusions;
+    final List<String> titleInclusions;
 
-    Client(String name, HttpService httpService, NotificationService notificationService) {
+    Client(String name, HttpService httpService, NotificationService notificationService, List<String> titleExclusions, List<String> titleInclusions) {
         this.failureCount = 0;
         this.name = name;
         this.httpService = httpService;
         this.notificationService = notificationService;
+        this.titleExclusions = titleExclusions.stream().map(String::toLowerCase).toList();
+        this.titleInclusions = titleInclusions.stream().map(String::toLowerCase).toList();
         Client.clients.add(this);
     }
 
@@ -32,7 +36,14 @@ public abstract class Client<T extends Job<?>> {
         List<Job<?>> jobs = new ArrayList<>();
 
         for (Client<?> client : clients) {
-            jobs.addAll(client.getAllJobsSafely());
+            List<? extends Job<?>> clientFilteredJobs = client
+                    .getAllJobsSafely()
+                    .stream()
+                    .filter(job -> client.titleExclusions.stream().noneMatch(exclusion -> job.getTitle().toLowerCase().contains(exclusion)))
+                    .filter(job -> client.titleInclusions.stream().anyMatch(inclusion -> job.getTitle().toLowerCase().contains(inclusion)))
+                    .toList();
+
+            jobs.addAll(clientFilteredJobs);
         }
 
         return jobs;

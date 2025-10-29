@@ -13,7 +13,13 @@ import java.util.List;
 @Service
 public class EpicGamesClient extends Client<EpicGamesJob> {
     EpicGamesClient(HttpService httpService, NotificationService notificationService) {
-        super("Epic Games", httpService, notificationService);
+        super(
+                "Epic Games",
+                httpService,
+                notificationService,
+                new ArrayList<>(List.of("intern", "senior", "eac", "lead", "principal", "director")),
+                new ArrayList<>(List.of(""))
+        );
     }
 
     @Override
@@ -21,7 +27,6 @@ public class EpicGamesClient extends Client<EpicGamesJob> {
         return getAll(0, Integer.MAX_VALUE)
                 .stream()
                 .flatMap(response -> response.hits.stream())
-                .filter(hit -> !hit.title.contains("EAC") && !hit.title.contains("Mobile") && !hit.title.contains("Data") && !hit.title.contains("Animation") && !hit.title.contains("Director") && !hit.title.contains("Lead") && !hit.title.contains("Principal") && !hit.title.contains("Senior"))
                 .map(EpicGamesJob::new)
                 .toList();
     }

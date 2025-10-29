@@ -30,6 +30,9 @@ public class HttpService {
 
     public void sendRequest(Method method, String uri, String body, String... headers) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder().method(method.name(), HttpRequest.BodyPublishers.ofString(body)).headers(headers).uri(URI.create(uri)).build();
-        client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() >= 300) {
+            throw new IOException(String.format("Received status code %d", response.statusCode()));
+        }
     }
 }
