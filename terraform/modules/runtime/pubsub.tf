@@ -5,7 +5,7 @@ resource "google_pubsub_topic" "ntfy" {
 resource "google_pubsub_subscription" "ntfy" {
   enable_exactly_once_delivery = true
   name  = "ntfy"
-  topic = google_pubsub_topic.ntfy
+  topic = google_pubsub_topic.ntfy.name
 
   expiration_policy {
     ttl = ""
