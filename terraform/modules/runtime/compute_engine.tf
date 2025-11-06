@@ -32,6 +32,8 @@ resource "google_compute_instance" "app" {
       null_resource.always_run
     ]
   }
+
+  depends_on = [google_pubsub_subscription.ntfy]
 }
 
 resource "null_resource" "always_run" {
