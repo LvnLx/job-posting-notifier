@@ -1,32 +1,37 @@
 package com.lvnlx.job.posting.notifier.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lvnlx.job.posting.notifier.enumeration.Level;
-import com.lvnlx.job.posting.notifier.enumeration.Method;
+import com.lvnlx.job.posting.notifier.gcp.Pubsub;
 import com.lvnlx.job.posting.notifier.model.Job;
+import com.lvnlx.job.posting.notifier.model.pubsub.NtfyRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
 @Component
 public class NotificationService {
     private static final Logger logger = LoggerFactory.getLogger(NotificationService.class);
 
-    private final HttpService httpService;
-    private final String notificationTopic;
+    private final ObjectMapper objectMapper;
+    private final Pubsub pubsub;
 
-    NotificationService(HttpService httpService) {
-        this.httpService = httpService;
-        this.notificationTopic = System.getenv("NOTIFICATION_TOPIC");
+    NotificationService(Pubsub pubsub) {
+        this.objectMapper = new ObjectMapper();
+        this.pubsub = pubsub;
     }
 
     public void sendNotification(String title, String message, Level level) {
         try {
-            httpService.sendRequest(Method.POST, String.format("https://ntfy.sh/%s", notificationTopic), message, "Title", title, "X-Tags", level.icon);
-        } catch (IOException | InterruptedException exception) {
-            logger.error("Unable to send notification", exception);
+            NtfyRequest request = new NtfyRequest(title, message, List.of(level.icon));
+            String requestString = objectMapper.writeValueAsString(request);
+            pubsub.publish(requestString);
+        } catch (JsonProcessingException exception) {
+            logger.error("Unable to parse ntfy request", exception);
         }
     }
 
@@ -34,11 +39,13 @@ public class NotificationService {
         if (!jobs.isEmpty()) {
             try {
                 for (Job<?> job : jobs) {
-                    httpService.sendRequest(Method.POST, String.format("https://ntfy.sh/%s", notificationTopic), job.getTitle(), "Title", String.format("New %s Job", job.company), "X-Tags", "briefcase", "Actions", String.format("view, Posting, %s", job.getLink()));
+                    NtfyRequest request = new NtfyRequest(String.format("New %s Job", job.company), job.getTitle(), job.getLink(), List.of("briefcase"));
+                    String requestString = objectMapper.writeValueAsString(request);
+                    pubsub.publish(requestString);
                     logger.info("Sent notification for job {}", job.getId());
                 }
-            } catch (IOException | InterruptedException exception) {
-                logger.error("Unable to send job notification", exception);
+            } catch (JsonProcessingException exception) {
+                logger.error("Unable to parse ntfy request", exception);
             }
         } else {
             logger.info("No new jobs");

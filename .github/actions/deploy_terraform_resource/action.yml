@@ -30,7 +30,7 @@ runs:
       working-directory: terraform
       env:
         TF_VAR_image_name: ${{ env.IMAGE_NAME }}
-        TF_VAR_notification_topic: ${{ env.NOTIFICATION_TOPIC }}
+        TF_VAR_ntfy_topic: ${{ env.NTFY_TOPIC }}
         TF_VAR_project_id: ${{ env.GCP_PROJECT_ID }}
         TF_VAR_project_name: ${{ env.PROJECT_NAME }}
         TF_VAR_region: ${{ env.REGION }}

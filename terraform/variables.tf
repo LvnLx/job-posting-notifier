@@ -2,7 +2,7 @@ variable "image_name" {
   type = string
 }
 
-variable "notification_topic" {
+variable "ntfy_topic" {
   sensitive = true
   type = string
 }

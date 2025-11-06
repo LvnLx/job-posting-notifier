@@ -19,7 +19,7 @@ module "foundation" {
 module "runtime" {
   source    = "./modules/runtime"
   image_name = var.image_name
-  notification_topic = var.notification_topic
+  ntfy_topic = var.ntfy_topic
   project_id = var.project_id
   project_name = var.project_name
   region = var.region

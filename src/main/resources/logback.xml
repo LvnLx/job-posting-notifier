@@ -5,10 +5,10 @@
                 <timestamp>
                     <fieldName>@timestamp</fieldName>
                 </timestamp>
-                <message/>
                 <logLevel>
                     <fieldName>level</fieldName>
                 </logLevel>
+                <message/>
                 <stackTrace>
                     <fieldName>error</fieldName>
                     <!-- Optionally you can nest a converter to control truncation -->
