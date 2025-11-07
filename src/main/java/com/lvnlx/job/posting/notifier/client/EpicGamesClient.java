@@ -17,8 +17,8 @@ public class EpicGamesClient extends Client<EpicGamesJob> {
                 "Epic Games",
                 httpService,
                 notificationService,
-                new ArrayList<>(List.of("intern", "senior", "eac", "lead", "principal", "director")),
-                new ArrayList<>(List.of(""))
+                List.of("intern", "senior", "eac", "lead", "principal", "director"),
+                List.of("")
         );
     }
 

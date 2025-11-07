@@ -18,8 +18,8 @@ public class AppleClient extends Client<AppleJob> {
                 "Apple",
                 httpService,
                 notificationService,
-                new ArrayList<>(List.of("research", "testing", "hardware", "site reliability")),
-                new ArrayList<>(List.of("engineer"))
+                List.of("research", "testing", "hardware", "site reliability"),
+                List.of("engineer")
         );
     }
 

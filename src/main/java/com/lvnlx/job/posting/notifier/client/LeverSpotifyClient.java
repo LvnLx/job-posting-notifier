@@ -18,8 +18,8 @@ public class LeverSpotifyClient extends Client<LeverSpotifyJob> {
                 "Lever",
                 httpService,
                 notificationService,
-                new ArrayList<>(List.of("machine learning", "manager", "research", "staff")),
-                new ArrayList<>(List.of(""))
+                SpotifyClient.exclusions,
+                SpotifyClient.inclusions
         );
     }
 

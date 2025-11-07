@@ -17,8 +17,8 @@ public class NetflixClient extends Client<NetflixJob> {
                 "Netflix",
                 httpService,
                 notificationService,
-                new ArrayList<>(List.of("security", "site reliability", "ui", "android", "ios")),
-                new ArrayList<>(List.of("4"))
+                List.of("security", "site reliability", "ui", "android", "ios"),
+                List.of("4")
         );
     }
 

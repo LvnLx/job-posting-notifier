@@ -12,13 +12,16 @@ import java.util.List;
 
 @Service
 public class SpotifyClient extends Client<SpotifyJob> {
+    static final List<String> exclusions = List.of("manager", "senior machine", "staff machine", "research", "senior data", "senior product");
+    static final List<String> inclusions = List.of("");
+
     SpotifyClient(HttpService httpService, NotificationService notificationService) {
         super(
                 "Spotify",
                 httpService,
                 notificationService,
-                new ArrayList<>(List.of("manager", "senior machine", "staff machine", "research", "senior data", "senior product")),
-                new ArrayList<>(List.of(""))
+                exclusions,
+                inclusions
         );
     }
 
