@@ -6,6 +6,7 @@ import com.lvnlx.job.posting.notifier.enumeration.Level;
 import com.lvnlx.job.posting.notifier.gcp.Pubsub;
 import com.lvnlx.job.posting.notifier.model.Job;
 import com.lvnlx.job.posting.notifier.model.pubsub.NtfyRequest;
+import com.lvnlx.job.posting.notifier.model.pubsub.NtfyRequestAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -39,10 +40,9 @@ public class NotificationService {
         if (!jobs.isEmpty()) {
             try {
                 for (Job<?> job : jobs) {
-                    NtfyRequest request = new NtfyRequest(String.format("New %s Job", job.company), job.getTitle(), job.getLink(), List.of("briefcase"));
+                    NtfyRequest request = new NtfyRequest(String.format("New %s Job", job.company), job.getTitle(), new NtfyRequestAction(job.getLink()), List.of("briefcase"));
                     String requestString = objectMapper.writeValueAsString(request);
-                    pubsub.publish(requestString);
-                    logger.info("Sent notification for job {}", job.getId());
+//                    pubsub.publish(requestString);
                 }
             } catch (JsonProcessingException exception) {
                 logger.error("Unable to parse ntfy request", exception);
