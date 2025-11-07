@@ -7,7 +7,7 @@ resource "google_bigquery_dataset" "job_posting_notifier" {
 }
 
 resource "google_bigquery_table" "companies" {
-  dataset_id          = google_bigquery_dataset.job_posting_notifier.id
+  dataset_id          = google_bigquery_dataset.job_posting_notifier.dataset_id
   deletion_protection = false
   friendly_name       = "Companies"
   schema              = file("${path.module}/schema/companies.json")
@@ -15,7 +15,7 @@ resource "google_bigquery_table" "companies" {
 }
 
 resource "google_bigquery_table" "job_postings" {
-  dataset_id          = google_bigquery_dataset.job_posting_notifier.id
+  dataset_id          = google_bigquery_dataset.job_posting_notifier.dataset_id
   deletion_protection = false
   friendly_name       = "Job Postings"
   schema              = file("${path.module}/schema/job_postings.json")
