@@ -17,7 +17,7 @@ public class SpotifyClient extends Client<SpotifyJob> {
                 "Spotify",
                 httpService,
                 notificationService,
-                new ArrayList<>(List.of("manager")),
+                new ArrayList<>(List.of("manager", "senior machine", "staff machine", "research", "senior data", "senior product")),
                 new ArrayList<>(List.of(""))
         );
     }
@@ -25,7 +25,7 @@ public class SpotifyClient extends Client<SpotifyJob> {
     @Override
     protected List<SpotifyJob> getAllJobs() throws IOException, InterruptedException {
         return httpService
-                .sendGetRequest("https://api-dot-new-spotifyjobs-com.nw.r.appspot.com/wp-json/animal/v1/job/search?l=berlin%2Cchicago%2Clos-angeles%2Cnashville%2Cnew-york%2Ctoronto&c=backend%2Cclient-c%2Cdeveloper-tools-infrastructure%2Cnetwork-engineering-it%2Csecurity%2Cweb", SearchResponse.class)
+                .sendGetRequest("https://api-dot-new-spotifyjobs-com.nw.r.appspot.com/wp-json/animal/v1/job/search?l=boston%2Clos-angeles%2Cnashville%2Cnew-york%2Cunited-states-of-america-home-mix%2Cwashington-d-c&c=backend%2Cclient-c%2Cdata%2Cdeveloper-tools-infrastructure%2Cmobile%2Cnetwork-engineering-it%2Csecurity%2Cweb%2Cmachine-learning%2Cproduct", SearchResponse.class)
                 .result
                 .stream()
                 .map(SpotifyJob::new)
