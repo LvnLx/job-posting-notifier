@@ -24,7 +24,7 @@ resource "google_compute_instance" "app" {
     sudo apt-get install -y docker.io
     gcloud auth configure-docker ${var.region}-docker.pkg.dev --quiet
     sudo docker pull ${var.region}-docker.pkg.dev/${var.project_id}/${var.project_name}/app:latest
-    sudo docker run --rm -e NTFY_TOPIC="${var.ntfy_topic}" -e PROJECT_ID="${var.project_id}" -e PUBSUB_TOPIC="${google_pubsub_topic.ntfy.id}"" ${var.region}-docker.pkg.dev/${var.project_id}/${var.project_name}/${var.image_name}:latest
+    sudo docker run --rm -e NTFY_TOPIC="${var.ntfy_topic}" -e PROJECT_ID="${var.project_id}" -e PUBSUB_TOPIC="${google_pubsub_topic.ntfy.id}" ${var.region}-docker.pkg.dev/${var.project_id}/${var.project_name}/${var.image_name}:latest
   EOT
 
   lifecycle {
