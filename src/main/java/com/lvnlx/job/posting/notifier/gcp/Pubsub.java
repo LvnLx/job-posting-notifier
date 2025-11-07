@@ -23,7 +23,7 @@ public class Pubsub {
             ProjectTopicName topic = ProjectTopicName.of(projectId, topicId);
             this.publisher = Publisher.newBuilder(topic).build();
         } catch (Exception exception) {
-            logger.error("Error setting up pubsub", exception);
+            logger.error("Error setting up Pub/Sub client", exception);
             throw exception;
         }
     }
