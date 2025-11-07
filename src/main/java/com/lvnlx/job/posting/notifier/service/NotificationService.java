@@ -42,7 +42,7 @@ public class NotificationService {
                 for (Job<?> job : jobs) {
                     NtfyRequest request = new NtfyRequest(String.format("New %s Job", job.company), job.getTitle(), new NtfyRequestAction(job.getLink()), List.of("briefcase"));
                     String requestString = objectMapper.writeValueAsString(request);
-//                    pubsub.publish(requestString);
+                    pubsub.publish(requestString);
                 }
             } catch (JsonProcessingException exception) {
                 logger.error("Unable to parse ntfy request", exception);
