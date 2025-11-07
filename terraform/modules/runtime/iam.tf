@@ -3,17 +3,20 @@ resource "google_service_account" "vm" {
   display_name = "VM Service Account"
 }
 
-resource "google_project_iam_custom_role" "artifact_download" {
-  role_id     = "artifactDownload"
-  title       = "Artifact Download"
-
-  permissions = [
-    "artifactregistry.repositories.downloadArtifacts"
-  ]
+resource "google_project_iam_member" "vm_artifact_registry_reader" {
+  member  = local.vm_member
+  project = var.project_id
+  role    = "roles/artifactregistry.reader"
 }
 
-resource "google_project_iam_member" "vm_artifact_download" {
+resource "google_project_iam_member" "vm_pubsub_publisher" {
+  member  = local.vm_member
   project = var.project_id
-  role    = google_project_iam_custom_role.artifact_download.name
-  member  = "serviceAccount:${google_service_account.vm.email}"
+  role    = "roles/pubsub.publisher"
+}
+
+resource "google_project_iam_member" "vm_pubsub_viewer" {
+  member  = local.vm_member
+  project = var.project_id
+  role    = "roles/pubsub.viewer"
 }
