@@ -6,6 +6,6 @@ public class SearchRequestFormat {
         this.mediumDate = "MMM D, YYYY";
     }
 
-    public String longDate;
-    public String mediumDate;
+    public final String longDate;
+    public final String mediumDate;
 }

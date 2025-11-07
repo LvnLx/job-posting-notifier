@@ -10,10 +10,10 @@ public class SearchRequest {
         this.sort = "";
     }
 
-    public SearchRequestFilters filters;
-    public SearchRequestFormat format;
-    public String locale;
-    public int page;
-    public String query;
-    public String sort;
+    public final SearchRequestFilters filters;
+    public final SearchRequestFormat format;
+    public final String locale;
+    public final int page;
+    public final String query;
+    public final String sort;
 }

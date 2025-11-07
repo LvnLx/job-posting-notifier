@@ -10,6 +10,6 @@ public class SearchRequestFilters {
         this.locations.add("postLocation-USA");
     }
 
-    public boolean homeOffice;
-    public List<String> locations;
+    public final boolean homeOffice;
+    public final List<String> locations;
 }

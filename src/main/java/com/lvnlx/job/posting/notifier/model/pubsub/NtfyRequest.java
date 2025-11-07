@@ -5,8 +5,8 @@ import java.util.List;
 public class NtfyRequest {
     private static final String ntfyTopic = System.getenv("NTFY_TOPIC");
 
-    public NtfyRequest(String title, String message, String click, List<String> tags) {
-        this.click = click;
+    public NtfyRequest(String title, String message, NtfyRequestAction action, List<String> tags) {
+        this.actions = List.of(action);
         this.message = message;
         this.tags = tags;
         this.title = title;
@@ -14,16 +14,16 @@ public class NtfyRequest {
     }
 
     public NtfyRequest(String title, String message, List<String> tags) {
-        this.click = null;
+        this.actions = List.of();
         this.message = message;
         this.tags = tags;
         this.title = title;
         this.topic = NtfyRequest.ntfyTopic;
     }
 
-    public String click;
-    public String message;
-    public List<String> tags;
-    public String title;
-    public String topic;
+    public final List<NtfyRequestAction> actions;
+    public final String message;
+    public final List<String> tags;
+    public final String title;
+    public final String topic;
 }
