@@ -12,5 +12,9 @@ resource "google_pubsub_subscription" "ntfy" {
 
   push_config {
     push_endpoint = "https://ntfy.sh/"
+
+    no_wrapper {
+      write_metadata = false
+    }
   }
 }
