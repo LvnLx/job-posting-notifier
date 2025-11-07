@@ -9,6 +9,18 @@ resource "google_project_iam_member" "vm_artifact_registry_reader" {
   role    = "roles/artifactregistry.reader"
 }
 
+resource "google_project_iam_member" "vm_bigquery_editor" {
+  member  = local.vm_member
+  project = var.project_id
+  role    = "roles/bigquery.dataEditor"
+}
+
+resource "google_project_iam_member" "vm_bigquery_viewer" {
+  member  = local.vm_member
+  project = var.project_id
+  role    = "roles/bigquery.dataViewer"
+}
+
 resource "google_project_iam_member" "vm_pubsub_publisher" {
   member  = local.vm_member
   project = var.project_id

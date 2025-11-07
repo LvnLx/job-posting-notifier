@@ -1,0 +1,12 @@
+[
+  {
+    "name": "company_id",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "company_name",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  }
+]
