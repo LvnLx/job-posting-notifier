@@ -1,21 +1,23 @@
 package com.lvnlx.job.posting.notifier.client;
 
-import com.lvnlx.job.posting.notifier.model.lever.spotify.LeverSpotifyJob;
-import com.lvnlx.job.posting.notifier.model.lever.spotify.response.Posting;
+import com.lvnlx.job.posting.notifier.gcp.BigQuery;
+import com.lvnlx.job.posting.notifier.model.job.lever.spotify.LeverSpotifyJob;
+import com.lvnlx.job.posting.notifier.model.job.lever.spotify.response.Posting;
 import com.lvnlx.job.posting.notifier.service.HttpService;
 import com.lvnlx.job.posting.notifier.service.NotificationService;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class LeverSpotifyClient extends Client<LeverSpotifyJob> {
-    LeverSpotifyClient(HttpService httpService, NotificationService notificationService) {
+    LeverSpotifyClient(BigQuery bigQuery, HttpService httpService, NotificationService notificationService) throws InterruptedException {
         super(
-                "Lever",
+                "lever-spotify",
+                "Lever (Spotify)",
+                bigQuery,
                 httpService,
                 notificationService,
                 SpotifyClient.exclusions,
@@ -28,7 +30,7 @@ public class LeverSpotifyClient extends Client<LeverSpotifyJob> {
         return Arrays
                 .stream(httpService.sendGetRequest("https://api.lever.co/v0/postings/spotify?mode=json&department=Engineering", Posting[].class))
                 .filter(posting -> posting.country.equals("US"))
-                .map(LeverSpotifyJob::new)
+                .map(posting -> new LeverSpotifyJob(posting, this))
                 .toList();
     }
 }

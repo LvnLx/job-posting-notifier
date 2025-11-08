@@ -20,4 +20,10 @@ resource "google_bigquery_table" "job_postings" {
   friendly_name       = "Job Postings"
   schema              = file("${path.module}/schema/job_postings.json")
   table_id            = "job_postings"
+
+  time_partitioning {
+    type          = "DAY"
+    field         = "created_at"
+    expiration_ms = 2592000000 # 30 days
+  }
 }

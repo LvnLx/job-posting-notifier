@@ -2,8 +2,8 @@ package com.lvnlx.job.posting.notifier.service;
 
 import com.lvnlx.job.posting.notifier.client.Client;
 import com.lvnlx.job.posting.notifier.enumeration.Level;
-import com.lvnlx.job.posting.notifier.model.Job;
-import com.lvnlx.job.posting.notifier.model.JobResult;
+import com.lvnlx.job.posting.notifier.gcp.BigQuery;
+import com.lvnlx.job.posting.notifier.model.job.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -12,20 +12,19 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class JobPostingNotifier {
     private static final Logger logger = LoggerFactory.getLogger(JobPostingNotifier.class);
 
+    private final BigQuery bigQuery;
     private final NotificationService notificationService;
-    private Set<String> currentJobIds;
 
-    JobPostingNotifier(NotificationService notificationService) {
+    JobPostingNotifier(BigQuery bigQuery, NotificationService notificationService) {
+        this.bigQuery = bigQuery;
         this.notificationService = notificationService;
-        this.currentJobIds = new HashSet<>();
     }
 
     @EventListener(ApplicationReadyEvent.class)
@@ -35,26 +34,32 @@ public class JobPostingNotifier {
 
     @Scheduled(fixedRate = 600000)
     @CacheEvict(value = "jobs", allEntries = true)
-    public void refreshJobs() {
+    public void refreshJobs() throws InterruptedException {
         logger.info("Refreshing jobs");
-        JobResult jobResult = getNewJobs(currentJobIds);
-        notificationService.sendNotifications(jobResult.newJobs);
-        currentJobIds = jobResult.jobIds;
+        List<Job<?, ?>> newJobs = getNewJobs();
+        notificationService.sendNotifications(newJobs);
+        bigQuery.createJobPostings(newJobs);
     }
 
-    private JobResult getNewJobs(Set<String> currentJobIds) {
-        List<Job<?>> jobs = Client.getJobsFromAll();
+    private List<Job<?, ?>> getNewJobs() throws InterruptedException {
+        List<String> currentJobIds;
 
-        HashSet<String> updatedJobIds = new HashSet<>();
-        HashSet<Job<?>> newJobs = new HashSet<>();
-        for (Job<?> job : jobs) {
+        try {
+            currentJobIds = bigQuery.getPostingIds().toList();
+        } catch (InterruptedException exception) {
+            logger.error("Failed to get posting IDs", exception);
+            throw exception;
+        }
+
+        List<Job<?, ?>> jobs = Client.getJobsFromAll();
+
+        ArrayList<Job<?, ?>> newJobs = new ArrayList<>();
+        for (Job<?, ?> job : jobs) {
             if (!currentJobIds.contains(job.getId())) {
                 newJobs.add(job);
             }
-
-            updatedJobIds.add(job.getId());
         }
 
-        return new JobResult(updatedJobIds, newJobs);
+        return newJobs;
     }
 }

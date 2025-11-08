@@ -1,7 +1,8 @@
 package com.lvnlx.job.posting.notifier.client;
 
-import com.lvnlx.job.posting.notifier.model.netflix.NetflixJob;
-import com.lvnlx.job.posting.notifier.model.netflix.response.JobsResponse;
+import com.lvnlx.job.posting.notifier.gcp.BigQuery;
+import com.lvnlx.job.posting.notifier.model.job.netflix.NetflixJob;
+import com.lvnlx.job.posting.notifier.model.job.netflix.response.JobsResponse;
 import com.lvnlx.job.posting.notifier.service.HttpService;
 import com.lvnlx.job.posting.notifier.service.NotificationService;
 import org.springframework.stereotype.Service;
@@ -12,9 +13,11 @@ import java.util.List;
 
 @Service
 public class NetflixClient extends Client<NetflixJob> {
-    NetflixClient(HttpService httpService, NotificationService notificationService) {
+    NetflixClient(BigQuery bigQuery, HttpService httpService, NotificationService notificationService) throws InterruptedException {
         super(
+                "netflix",
                 "Netflix",
+                bigQuery,
                 httpService,
                 notificationService,
                 List.of("security", "site reliability", "ui", "android", "ios"),
@@ -27,7 +30,7 @@ public class NetflixClient extends Client<NetflixJob> {
         return getAll(0, Integer.MAX_VALUE)
                 .stream()
                 .flatMap(response -> response.positions.stream())
-                .map(NetflixJob::new)
+                .map(response -> new NetflixJob(response, this))
                 .toList();
     }
 

@@ -1,8 +1,9 @@
 package com.lvnlx.job.posting.notifier.client;
 
-import com.lvnlx.job.posting.notifier.model.apple.AppleJob;
-import com.lvnlx.job.posting.notifier.model.apple.request.SearchRequest;
-import com.lvnlx.job.posting.notifier.model.apple.response.SearchResponse;
+import com.lvnlx.job.posting.notifier.gcp.BigQuery;
+import com.lvnlx.job.posting.notifier.model.job.apple.AppleJob;
+import com.lvnlx.job.posting.notifier.model.job.apple.request.SearchRequest;
+import com.lvnlx.job.posting.notifier.model.job.apple.response.SearchResponse;
 import com.lvnlx.job.posting.notifier.service.HttpService;
 import com.lvnlx.job.posting.notifier.service.NotificationService;
 import org.springframework.stereotype.Service;
@@ -13,9 +14,11 @@ import java.util.List;
 
 @Service
 public class AppleClient extends Client<AppleJob> {
-    AppleClient(HttpService httpService, NotificationService notificationService) {
+    AppleClient(BigQuery bigQuery, HttpService httpService, NotificationService notificationService) throws InterruptedException {
         super(
+                "apple",
                 "Apple",
+                bigQuery,
                 httpService,
                 notificationService,
                 List.of("research", "testing", "hardware", "site reliability"),
@@ -28,7 +31,7 @@ public class AppleClient extends Client<AppleJob> {
         return getAll(1)
                 .stream()
                 .flatMap(searchResponse -> searchResponse.res.searchResults.stream())
-                .map(AppleJob::new)
+                .map(searchResponse -> new AppleJob(searchResponse, this))
                 .toList();
     }
 

@@ -1,7 +1,8 @@
 package com.lvnlx.job.posting.notifier.client;
 
-import com.lvnlx.job.posting.notifier.model.epicgames.EpicGamesJob;
-import com.lvnlx.job.posting.notifier.model.epicgames.response.JobResponse;
+import com.lvnlx.job.posting.notifier.gcp.BigQuery;
+import com.lvnlx.job.posting.notifier.model.job.epicgames.EpicGamesJob;
+import com.lvnlx.job.posting.notifier.model.job.epicgames.response.JobResponse;
 import com.lvnlx.job.posting.notifier.service.HttpService;
 import com.lvnlx.job.posting.notifier.service.NotificationService;
 import org.springframework.stereotype.Service;
@@ -12,9 +13,11 @@ import java.util.List;
 
 @Service
 public class EpicGamesClient extends Client<EpicGamesJob> {
-    EpicGamesClient(HttpService httpService, NotificationService notificationService) {
+    EpicGamesClient(BigQuery bigQuery, HttpService httpService, NotificationService notificationService) throws InterruptedException {
         super(
+                "epic-games",
                 "Epic Games",
+                bigQuery,
                 httpService,
                 notificationService,
                 List.of("intern", "senior", "eac", "lead", "principal", "director"),
@@ -27,7 +30,7 @@ public class EpicGamesClient extends Client<EpicGamesJob> {
         return getAll(0, Integer.MAX_VALUE)
                 .stream()
                 .flatMap(response -> response.hits.stream())
-                .map(EpicGamesJob::new)
+                .map(response -> new EpicGamesJob(response, this))
                 .toList();
     }
 

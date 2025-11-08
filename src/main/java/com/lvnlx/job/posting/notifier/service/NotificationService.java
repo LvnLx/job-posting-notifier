@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lvnlx.job.posting.notifier.enumeration.Level;
 import com.lvnlx.job.posting.notifier.gcp.Pubsub;
-import com.lvnlx.job.posting.notifier.model.Job;
+import com.lvnlx.job.posting.notifier.model.job.Job;
 import com.lvnlx.job.posting.notifier.model.pubsub.NtfyRequest;
 import com.lvnlx.job.posting.notifier.model.pubsub.NtfyRequestAction;
 import org.slf4j.Logger;
@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Set;
 
 @Component
 public class NotificationService {
@@ -36,11 +35,11 @@ public class NotificationService {
         }
     }
 
-    public void sendNotifications(Set<Job<?>> jobs) {
+    public void sendNotifications(List<Job<?, ?>> jobs) {
         if (!jobs.isEmpty()) {
             try {
-                for (Job<?> job : jobs) {
-                    NtfyRequest request = new NtfyRequest(String.format("New %s Job", job.company), job.getTitle(), new NtfyRequestAction(job.getLink()), List.of("briefcase"));
+                for (Job<?, ?> job : jobs) {
+                    NtfyRequest request = new NtfyRequest(String.format("New %s Job", job.getCompanyName()), job.getTitle(), new NtfyRequestAction(job.getLink()), List.of("briefcase"));
                     String requestString = objectMapper.writeValueAsString(request);
                     pubsub.publish(requestString);
                 }

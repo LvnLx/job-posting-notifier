@@ -4,6 +4,7 @@ import com.google.cloud.pubsub.v1.Publisher;
 import com.google.protobuf.ByteString;
 import com.google.pubsub.v1.ProjectTopicName;
 import com.google.pubsub.v1.PubsubMessage;
+import com.lvnlx.job.posting.notifier.constant.Environment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -18,9 +19,7 @@ public class Pubsub {
 
     Pubsub() throws IOException {
         try {
-            String projectId = System.getenv("PROJECT_ID");
-            String topicId = System.getenv("PUBSUB_TOPIC");
-            ProjectTopicName topic = ProjectTopicName.of(projectId, topicId);
+            ProjectTopicName topic = ProjectTopicName.of(Environment.PROJECT_ID, Environment.PUBSUB_TOPIC);
             this.publisher = Publisher.newBuilder(topic).build();
         } catch (Exception exception) {
             logger.error("Error setting up Pub/Sub client", exception);

@@ -1,16 +1,16 @@
 package com.lvnlx.job.posting.notifier.model.pubsub;
 
+import com.lvnlx.job.posting.notifier.constant.Environment;
+
 import java.util.List;
 
 public class NtfyRequest {
-    private static final String ntfyTopic = System.getenv("NTFY_TOPIC");
-
     public NtfyRequest(String title, String message, NtfyRequestAction action, List<String> tags) {
         this.actions = List.of(action);
         this.message = message;
         this.tags = tags;
         this.title = title;
-        this.topic = NtfyRequest.ntfyTopic;
+        this.topic = Environment.NTFY_TOPIC;
     }
 
     public NtfyRequest(String title, String message, List<String> tags) {
@@ -18,7 +18,7 @@ public class NtfyRequest {
         this.message = message;
         this.tags = tags;
         this.title = title;
-        this.topic = NtfyRequest.ntfyTopic;
+        this.topic = Environment.NTFY_TOPIC;
     }
 
     public final List<NtfyRequestAction> actions;
