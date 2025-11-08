@@ -38,7 +38,7 @@ jobs:
           module: foundation
         env:
           GCP_CREDENTIALS_JSON: ${{ secrets.GCP_CREDENTIALS_JSON }}
-          GCP_PROJECT_ID: ${{ sectets.GCP_PROJECT_ID }}
+          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
           IMAGE_NAME: ${{ env.IMAGE_NAME }}
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
           PROJECT_NAME: ${{ env.PROJECT_NAME }}
