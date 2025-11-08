@@ -1,19 +1,29 @@
 # Job Posting Notifier
-A Dockerized Java Spring Boot service running on Google Cloud Platform (GCP) that periodically checks for new job postings from various API sources and sends real-time notifications using [ntfy](https://ntfy.sh/).
+A Java Spring Boot application running on Google Cloud Platform (GCP) that periodically checks for new job postings from various API sources.
 
-Infrastructure is managed with Terraform, and CI/CD is handled using GitHub Actions (GHA).
-
-## How to run
-- Clone the repository to the machine you would like to run the program on
-- Add to or modify the [clients](src/main/java/com/lvnlx/job/posting/notifier/client) and [models](src/main/java/com/lvnlx/job/posting/notifier/model) as needed to integrate with desired APIs and postings
-  - The clients simply need to implement the interface defined [here](https://github.com/LvnLx/job-posting-notifier/blob/main/src/main/java/com/lvnlx/job/posting/notifier/client/Client.java)
-  - The response models should be wrapped in a class specific to the client, which simply need to implement the interface defined [here](src/main/java/com/lvnlx/job/posting/notifier/model/Job.java)
-- Install and run [ntfy](https://ntfy.sh/) on any devices you wish to receieve notifications on, subscribing to the topic you set in the next step
-  - [ntfy](https://ntfy.sh/) allows for self hosting if you'd like to ensure privacy or guarantee topic names
-- Compile and run the program, ensuring that the `NTFY_TOPIC` environment variable is set to a unique value (it will be used for your [ntfy.sh](https://ntfy/) topic
+## Key Features
+- Real-time notifications published via Pub/Sub
+- Automated and containerized deployment to Compute Engine via Docker, GitHub Actions, and Terraform
+- Persistence of postings via BigQuery
 
 ## Points of interest
-- [API clients](src/main/java/com/lvnlx/job/posting/notifier/client)
 - [Core notification logic](src/main/java/com/lvnlx/job/posting/notifier/service/JobPostingNotifier.java)
+- [API clients](src/main/java/com/lvnlx/job/posting/notifier/client)
+- [GCP SDK integrations](src/main/java/com/lvnlx/job/posting/notifier/gcp)
 - [GCP infrastructure (Terraform)](/terraform)
-- [CI/CD pipeline (GHA)](.github/workflows/deploy.yml)
+- [CI/CD pipeline (GHA)](.github)
+
+## How to run
+1. Make sure you have a [Google Cloud account](https://cloud.google.com/?hl=en) with a service account you can use for infrastructure deployments
+2. Fork the repository, setting up repository secrets `GCP_PROJECT_ID` (your Google Cloud's project ID), `GCP_CREDENTIALS_JSON` (follow [these instructions](https://developers.google.com/workspace/guides/create-credentials) for the service account mentioned in step 1), and `NTFY_TOPIC` (checkout how to receive messages [here](https://docs.ntfy.sh/#step-1-get-the-app))
+3. Trigger the GitHub actions pipeline, for which the triggering conditions can be found [here](.github/workflows/deploy.yml) (note that this will start the application in the cloud, so make sure you have your `ntfy.sh` subscribing device setup with the correct topic)
+4. From here you have two options:
+   1. If you'd like to run the application in your Google Cloud Project, simply wait for the pipeline to complete and within a few minutes notifications should be sent to the topic you previously configured 
+   2. If you'd like to run the code locally, set the following environment variables:
+
+| Environment Variable Name | Value                          |
+|---------------------------|--------------------------------|
+| `NTFY_TOPIC`              | Topic name of your choice      |
+| `PROJECT_ID`              | Your Google Cloud's project ID |
+| `DATASET_NAME`            | `job_posting_notifier`         |
+| `PUBSUB_TOPIC`            | `ntfy`                         |
