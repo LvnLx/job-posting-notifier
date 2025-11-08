@@ -11,16 +11,10 @@
                 <message/>
                 <stackTrace>
                     <fieldName>error</fieldName>
-                    <!-- Optionally you can nest a converter to control truncation -->
-                    <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
-                        <maxDepthPerThrowable>1</maxDepthPerThrowable>
-                        <maxLength>2048</maxLength>
-                    </throwableConverter>
                 </stackTrace>
             </providers>
         </encoder>
     </appender>
-
     <root level="INFO">
         <appender-ref ref="STDOUT"/>
     </root>
