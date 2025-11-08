@@ -30,6 +30,8 @@ jobs:
             infrastructure:
               - 'terraform/*'
               - 'terraform/modules/foundation/**'
+            pipeline:
+              - '.github/**'
 
       - name: Run action
         if: steps.changes.outputs.infrastructure == 'true'
@@ -62,6 +64,8 @@ jobs:
               - 'Dockerfile'
               - 'pom.xml'
               - 'src/main/**'
+            pipeline:
+              - '.github/**'
 
       - name: Set up JDK
         if: steps.changes.outputs.application == 'true'
@@ -98,9 +102,9 @@ jobs:
         run: |
           docker push $REGION-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/$PROJECT_NAME/$IMAGE_NAME:latest
 
-  deploy_instance:
+  deploy_application:
     needs: build_and_publish
-    name: Deploy instance
+    name: Deploy application
     runs-on: ubuntu-latest
 
     steps:
@@ -119,6 +123,8 @@ jobs:
             infrastructure:
               - 'terraform/*'
               - 'terraform/modules/runtime/**'
+            pipeline:
+              - '.github/**'
 
       - name: Run action
         if: ${{ steps.changes.outputs.application == 'true' || steps.changes.outputs.infrastructure == 'true' }}
