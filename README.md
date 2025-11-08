@@ -20,10 +20,14 @@ A Java Spring Boot application running on Google Cloud Platform (GCP) that perio
 4. From here you have two options:
    1. If you'd like to run the application in your Google Cloud Project, simply wait for the pipeline to complete and within a few minutes notifications should be sent to the topic you previously configured 
    2. If you'd like to run the code locally, set the following environment variables:
+  
+<div align="center">
 
-| Environment Variable Name | Value                          |
-|---------------------------|--------------------------------|
-| `NTFY_TOPIC`              | Topic name of your choice      |
-| `PROJECT_ID`              | Your Google Cloud's project ID |
-| `DATASET_NAME`            | `job_posting_notifier`         |
-| `PUBSUB_TOPIC`            | `ntfy`                         |
+| Environment Variable | Value                          |
+|:--------------------:|:------------------------------:|
+| `NTFY_TOPIC`         | Topic name of your choice      |
+| `PROJECT_ID`         | Your Google Cloud's project ID |
+| `DATASET_NAME`       | `job_posting_notifier`         |
+| `PUBSUB_TOPIC`       | `ntfy`                         |
+
+</div>
