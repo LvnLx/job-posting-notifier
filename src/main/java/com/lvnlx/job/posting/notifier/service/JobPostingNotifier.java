@@ -7,7 +7,6 @@ import com.lvnlx.job.posting.notifier.model.job.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -33,10 +32,10 @@ public class JobPostingNotifier {
     }
 
     @Scheduled(fixedRate = 600000)
-    @CacheEvict(value = "jobs", allEntries = true)
-    public void refreshJobs() throws InterruptedException {
-        logger.info("Refreshing jobs");
+    public void getJobs() throws InterruptedException {
+        logger.info("Getting jobs");
         List<Job<?, ?>> newJobs = getNewJobs();
+        logger.info("Found {} new job(s)", newJobs.size());
         notificationService.sendNotifications(newJobs);
         bigQuery.createJobPostings(newJobs);
     }

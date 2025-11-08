@@ -23,6 +23,10 @@ public class BigQuery {
     }
 
     public void createJobPostings(List<Job<?, ?>> jobs) throws RuntimeException {
+        if (jobs.isEmpty()) {
+            return;
+        }
+
         TableId table = TableId.of(Environment.DATASET_NAME, Table.JOB_POSTINGS);
         InsertAllRequest.Builder builder = InsertAllRequest.newBuilder(table);
         jobs.forEach(job -> {
@@ -55,7 +59,7 @@ public class BigQuery {
     public boolean doesCompanyExist(String companyId) throws InterruptedException {
         String sql = companyIdCount(companyId);
         QueryJobConfiguration query = QueryJobConfiguration.newBuilder(sql).build();
-        return bigQuery.query(query).getTotalRows() == 1;
+        return bigQuery.query(query).streamAll().map(row -> row.get(0).getLongValue()).toList().get(0) == 1;
     }
 
     public Stream<String> getPostingIds() throws InterruptedException {
