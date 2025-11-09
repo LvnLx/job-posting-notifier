@@ -12,7 +12,7 @@ import java.util.List;
 
 @Service
 public class SpotifyClient extends Client<SpotifyJob> {
-    static final List<String> exclusions = List.of("manager", "senior machine", "staff machine", "research", "senior data", "senior product");
+    static final List<String> exclusions = List.of("manager", "senior machine", "staff machine", "staff", "research", "senior data", "senior product");
     static final List<String> inclusions = List.of("");
 
     SpotifyClient(BigQuery bigQuery, HttpService httpService, NotificationService notificationService) throws InterruptedException {
