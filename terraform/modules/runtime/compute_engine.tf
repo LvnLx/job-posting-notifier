@@ -22,10 +22,6 @@ resource "google_compute_instance" "app" {
     #!/bin/bash
     sudo apt-get update
     sudo apt-get install -y docker.io
-
-    curl -sSO https://dl.google.com/cloudagents/add-google-cloud-ops-agent-repo.sh
-    sudo bash add-google-cloud-ops-agent-repo.sh --also-install
-
     gcloud auth configure-docker ${var.region}-docker.pkg.dev --quiet
     sudo docker pull ${var.region}-docker.pkg.dev/${var.project_id}/${var.project_name}/app:latest
     sudo docker run --rm -e DATASET_NAME="${google_bigquery_dataset.job_posting_notifier.dataset_id}" -e NTFY_TOPIC="${var.ntfy_topic}" -e PROJECT_ID="${var.project_id}" -e PUBSUB_TOPIC="${google_pubsub_topic.ntfy.name}" ${var.region}-docker.pkg.dev/${var.project_id}/${var.project_name}/${var.image_name}:latest
