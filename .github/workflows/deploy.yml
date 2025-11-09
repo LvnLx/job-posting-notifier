@@ -30,15 +30,17 @@ jobs:
             infrastructure:
               - 'terraform/*'
               - 'terraform/modules/foundation/**'
+            pipeline:
+              - '.github/**'
 
       - name: Run action
-        if: steps.changes.outputs.infrastructure == 'true'
+        if: ${{ steps.changes.outputs.infrastructure == 'true' || steps.changes.outputs.pipeline == 'true' }}
         uses: ./.github/actions/deploy_terraform_resource
         with:
           module: foundation
         env:
           GCP_CREDENTIALS_JSON: ${{ secrets.GCP_CREDENTIALS_JSON }}
-          GCP_PROJECT_ID: ${{ env.GCP_PROJECT_ID }}
+          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
           IMAGE_NAME: ${{ env.IMAGE_NAME }}
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
           PROJECT_NAME: ${{ env.PROJECT_NAME }}
@@ -62,45 +64,47 @@ jobs:
               - 'Dockerfile'
               - 'pom.xml'
               - 'src/main/**'
+            pipeline:
+              - '.github/**'
 
       - name: Set up JDK
-        if: steps.changes.outputs.application == 'true'
+        if: ${{ steps.changes.outputs.application == 'true' || steps.changes.outputs.pipeline == 'true' }}
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
 
       - name: Build with Maven
-        if: steps.changes.outputs.application == 'true'
+        if: ${{ steps.changes.outputs.application == 'true' || steps.changes.outputs.pipeline == 'true' }}
         run: mvn -B clean package
 
       - name: Authenticate to GCP
-        if: steps.changes.outputs.application == 'true'
+        if: ${{ steps.changes.outputs.application == 'true' || steps.changes.outputs.pipeline == 'true' }}
         uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GCP_CREDENTIALS_JSON }}
 
       - name: Set up Google Cloud CLI
-        if: steps.changes.outputs.application == 'true'
+        if: ${{ steps.changes.outputs.application == 'true' || steps.changes.outputs.pipeline == 'true' }}
         uses: google-github-actions/setup-gcloud@v2
 
       - name: Authenticate Docker with Artifact Registry
-        if: steps.changes.outputs.application == 'true'
+        if: ${{ steps.changes.outputs.application == 'true' || steps.changes.outputs.pipeline == 'true' }}
         run: gcloud auth configure-docker $REGION-docker.pkg.dev --quiet
 
       - name: Build Docker image
-        if: steps.changes.outputs.application == 'true'
+        if: ${{ steps.changes.outputs.application == 'true' || steps.changes.outputs.pipeline == 'true' }}
         run: |
-          docker build -t $REGION-docker.pkg.dev/$GCP_PROJECT_ID/$PROJECT_NAME/$IMAGE_NAME:latest .
+          docker build -t $REGION-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/$PROJECT_NAME/$IMAGE_NAME:latest .
 
       - name: Publish Docker image
-        if: steps.changes.outputs.application == 'true'
+        if: ${{ steps.changes.outputs.application == 'true' || steps.changes.outputs.pipeline == 'true' }}
         run: |
-          docker push $REGION-docker.pkg.dev/$GCP_PROJECT_ID/$PROJECT_NAME/$IMAGE_NAME:latest
+          docker push $REGION-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/$PROJECT_NAME/$IMAGE_NAME:latest
 
-  deploy_instance:
+  deploy_application:
     needs: build_and_publish
-    name: Deploy instance
+    name: Deploy application
     runs-on: ubuntu-latest
 
     steps:
@@ -119,9 +123,11 @@ jobs:
             infrastructure:
               - 'terraform/*'
               - 'terraform/modules/runtime/**'
+            pipeline:
+              - '.github/**'
 
       - name: Run action
-        if: ${{ steps.changes.outputs.application == 'true' || steps.changes.outputs.infrastructure == 'true' }}
+        if: ${{ steps.changes.outputs.application == 'true' || steps.changes.outputs.infrastructure == 'true' || steps.changes.outputs.pipeline == 'true' }}
         uses: ./.github/actions/deploy_terraform_resource
         with:
           module: runtime
