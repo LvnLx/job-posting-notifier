@@ -27,6 +27,18 @@ resource "google_project_iam_member" "vm_bigquery_job_user" {
   role    = "roles/bigquery.jobUser"
 }
 
+resource "google_project_iam_member" "vm_logs_writer" {
+  member  = local.vm_member
+  project = var.project_id
+  role    = "roles/logging.logWriter"
+}
+
+resource "google_project_iam_member" "vm_monitoring_metric_writer" {
+  member  = local.vm_member
+  project = var.project_id
+  role    = "roles/monitoring.metricWriter"
+}
+
 resource "google_project_iam_member" "vm_pubsub_publisher" {
   member  = local.vm_member
   project = var.project_id
